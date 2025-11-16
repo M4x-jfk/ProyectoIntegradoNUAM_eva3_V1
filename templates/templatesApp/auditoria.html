@@ -1,0 +1,82 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block page_title %}Auditoría{% endblock %}
+{% block header_title %}Auditoría y reportes{% endblock %}
+{% block header_subtitle %}Trazabilidad completa por usuario, acción y fecha{% endblock %}
+
+{% block content %}
+<section class="nuam-card nuam-card--dark">
+    <div class="nuam-section__header">
+        <h3 class="nuam-card__title" style="color:#fff;">Filtros</h3>
+        <div style="display:flex;gap:12px;">
+            <button class="nuam-btn nuam-btn--ghost">Exportar Excel</button>
+            <button class="nuam-btn nuam-btn--primary">Exportar PDF</button>
+        </div>
+    </div>
+    <div class="nuam-table__filters">
+        <input class="nuam-input" type="date">
+        <input class="nuam-input" type="date">
+        <select class="nuam-select">
+            <option>Usuario</option>
+            <option>Todos</option>
+            <option>Analistas</option>
+            <option>Supervisores</option>
+        </select>
+        <select class="nuam-select">
+            <option>Tipo de acción</option>
+            <option>Creación</option>
+            <option>Actualización</option>
+            <option>Eliminación</option>
+            <option>Descarga</option>
+        </select>
+    </div>
+</section>
+
+<section class="nuam-grid" style="grid-template-columns: 1.5fr 1fr;">
+    <article class="nuam-card nuam-card--dark">
+        <h3 class="nuam-card__title" style="color:#fff;">Línea de tiempo</h3>
+        <div class="nuam-timeline">
+            <div class="nuam-timeline__item">
+                <div class="nuam-card">
+                    <strong>María Álvarez</strong>
+                    <p>14/11 · 09:18 · Emite calificación CT-982</p>
+                    <p>Detalle: Score AA, documentos validados.</p>
+                </div>
+            </div>
+            <div class="nuam-timeline__item">
+                <div class="nuam-card">
+                    <strong>TI Supervisor</strong>
+                    <p>13/11 · 18:05 · Revierte bloqueo party</p>
+                    <p>MOTIVO: actualización de antecedentes SII.</p>
+                </div>
+            </div>
+            <div class="nuam-timeline__item">
+                <div class="nuam-card">
+                    <strong>Constanza León</strong>
+                    <p>13/11 · 17:20 · Descarga reporte auditoría</p>
+                    <p>Archivo: auditoria_1311.pdf</p>
+                </div>
+            </div>
+        </div>
+    </article>
+    <article class="nuam-card">
+        <h3 class="nuam-card__title">Reportes visuales</h3>
+        <div class="nuam-report-cards">
+            <div class="nuam-kpi">
+                <strong>Acciones registradas</strong>
+                <span>+230 esta semana</span>
+            </div>
+            <div class="nuam-kpi">
+                <strong>Usuarios auditados</strong>
+                <span>28 perfiles activos</span>
+            </div>
+        </div>
+        <div class="nuam-chart">
+            <canvas data-chart="bar" data-series="auditoria"></canvas>
+        </div>
+        <div class="nuam-chart">
+            <canvas data-chart="line" data-series="descargas"></canvas>
+        </div>
+    </article>
+</section>
+{% endblock %}

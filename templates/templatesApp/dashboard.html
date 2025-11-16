@@ -1,0 +1,105 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+{% block header_title %}Dashboard Tributario{% endblock %}
+{% block header_subtitle %}Supervisa calificaciones, partys y usuarios en tiempo real{% endblock %}
+
+{% block content %}
+<section>
+    <div class="nuam-grid">
+        <article class="nuam-card nuam-stats">
+            <span class="nuam-stats__label">Calificaciones emitidas</span>
+            <span class="nuam-stats__value">1.248</span>
+            <small class="nuam-status">+12% vs. mes anterior</small>
+        </article>
+        <article class="nuam-card nuam-stats">
+            <span class="nuam-stats__label">Partys activos</span>
+            <span class="nuam-stats__value">532</span>
+            <small>Empresas y contribuyentes en seguimiento</small>
+        </article>
+        <article class="nuam-card nuam-stats">
+            <span class="nuam-stats__label">Usuarios por rol</span>
+            <span class="nuam-stats__value">64</span>
+            <small>Analistas 32 · Supervisores 20 · Auditores 12</small>
+        </article>
+        <article class="nuam-card nuam-stats">
+            <span class="nuam-stats__label">Alertas</span>
+            <span class="nuam-stats__value" style="color:#ff4d4d;">18</span>
+            <small>Inconsistencias pendientes de revisión</small>
+        </article>
+    </div>
+</section>
+
+<section class="nuam-grid">
+    <article class="nuam-card">
+        <div class="nuam-section__header">
+            <h3 class="nuam-card__title">Evolución mensual</h3>
+            <span class="nuam-pill nuam-pill--warning">Últimos 12 meses</span>
+        </div>
+        <div class="nuam-chart">
+            <canvas data-chart="line" data-series="calificaciones"></canvas>
+        </div>
+    </article>
+    <article class="nuam-card">
+        <div class="nuam-section__header">
+            <h3 class="nuam-card__title">Distribución por estado</h3>
+            <span class="nuam-pill nuam-pill--success">Actualizado</span>
+        </div>
+        <div class="nuam-chart">
+            <canvas data-chart="bar" data-series="estados"></canvas>
+        </div>
+    </article>
+</section>
+
+<section class="nuam-grid">
+    <article class="nuam-card nuam-card--dark">
+        <div class="nuam-section__header">
+            <h3 class="nuam-card__title">Alertas críticas</h3>
+            <button class="nuam-btn nuam-btn--primary">Ver detalles</button>
+        </div>
+        <ul>
+            <li>7 calificaciones con documentos vencidos.</li>
+            <li>4 partys sin actividad económica actualizada.</li>
+            <li>3 rechazos en proceso de apelación.</li>
+        </ul>
+    </article>
+    <article class="nuam-card">
+        <div class="nuam-section__header">
+            <h3 class="nuam-card__title">Últimas acciones (Auditoría)</h3>
+            <button class="nuam-btn nuam-btn--ghost">Ver todo</button>
+        </div>
+        <div class="nuam-table--responsive">
+            <table class="nuam-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Usuario</th>
+                        <th>Acción</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>14/11 · 09:18</td>
+                        <td>María Álvarez</td>
+                        <td>Emitió calificación #CT-982</td>
+                        <td><span class="nuam-pill nuam-pill--success">Emitido</span></td>
+                    </tr>
+                    <tr>
+                        <td>14/11 · 08:52</td>
+                        <td>TI Supervisor</td>
+                        <td>Revirtió bloqueo de party RUT 76.123.980-2</td>
+                        <td><span class="nuam-pill nuam-pill--warning">Pendiente</span></td>
+                    </tr>
+                    <tr>
+                        <td>13/11 · 18:05</td>
+                        <td>Juan Caro</td>
+                        <td>Observó inconsistencias en reporte masivo</td>
+                        <td><span class="nuam-pill nuam-pill--error">Revisión</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+{% endblock %}
