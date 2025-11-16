@@ -1,0 +1,604 @@
+:root {
+    --color-black: #000000;
+    --color-dark: #101010;
+    --color-dark-alt: #1a1a1a;
+    --color-mid: #cccccc;
+    --color-white: #ffffff;
+    --color-orange: #ff7b00;
+    --color-orange-soft: #ffa040;
+    --color-orange-muted: #ff8c28;
+    --color-blue-dark: #0a0f1f;
+    --color-green: #3ccf4e;
+    --color-red: #ff4d4d;
+    --radius-pill: 999px;
+    --radius-card: 16px;
+    --radius-input: 12px;
+    --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
+    --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.2);
+    --shadow-frosted: 0 20px 40px rgba(10, 10, 10, 0.7);
+    font-size: 62.5%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 1.6rem;
+    margin: 0;
+    color: var(--color-white);
+    background-color: var(--color-dark);
+    min-height: 100vh;
+    line-height: 1.5;
+}
+
+a {
+    color: var(--color-orange-soft);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--color-white);
+}
+
+.nuam-body {
+    background: var(--color-dark);
+}
+
+.nuam-layout {
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-black) 60%);
+}
+
+.nuam-sidebar {
+    width: 264px;
+    background: var(--color-black);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nuam-logo {
+    font-size: 2.2rem;
+    letter-spacing: 0.6rem;
+    font-weight: 700;
+    color: var(--color-orange);
+    text-transform: uppercase;
+}
+
+.nuam-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nuam-menu__group {
+    display: grid;
+    gap: 4px;
+}
+
+.nuam-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-input);
+    color: var(--color-mid);
+    transition: background 0.2s, color 0.2s;
+}
+
+.nuam-menu__item svg,
+.nuam-menu__item i {
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+}
+
+.nuam-menu__item--active,
+.nuam-menu__item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-white);
+}
+
+.nuam-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    gap: 24px;
+}
+
+.nuam-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: var(--radius-card);
+    background: rgba(0, 0, 0, 0.4);
+    padding: 16px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nuam-search {
+    flex: 1;
+    margin-left: 16px;
+}
+
+.nuam-search input {
+    width: 100%;
+    border-radius: var(--radius-pill);
+    border: none;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-white);
+    outline: none;
+}
+
+.nuam-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-orange), var(--color-orange-soft));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-black);
+    font-weight: 600;
+}
+
+.nuam-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.nuam-card {
+    background: var(--color-white);
+    color: var(--color-black);
+    border-radius: var(--radius-card);
+    padding: 24px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(255, 123, 0, 0.15);
+}
+
+.nuam-card--dark {
+    background: var(--color-dark-alt);
+    color: var(--color-white);
+}
+
+.nuam-card__title {
+    font-size: 1.6rem;
+    margin: 0;
+    color: var(--color-black);
+}
+
+.nuam-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.nuam-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nuam-stats__label {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+}
+
+.nuam-stats__value {
+    font-size: 2.6rem;
+    font-weight: 700;
+}
+
+.nuam-tagline {
+    color: var(--color-orange-muted);
+    letter-spacing: 0.2rem;
+}
+
+.nuam-btn {
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 12px 28px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nuam-btn--primary {
+    background: linear-gradient(135deg, var(--color-orange), var(--color-orange-soft));
+    color: var(--color-black);
+    box-shadow: 0 10px 20px rgba(255, 123, 0, 0.3);
+}
+
+.nuam-btn--primary:hover {
+    transform: translateY(-2px);
+}
+
+.nuam-btn--ghost {
+    background: transparent;
+    color: var(--color-white);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nuam-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.nuam-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.nuam-table thead {
+    background: #f5f5f5;
+    color: var(--color-black);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+}
+
+.nuam-table th,
+.nuam-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f1f1;
+    text-align: left;
+}
+
+.nuam-table tbody tr {
+    background: var(--color-white);
+}
+
+.nuam-table tbody tr:nth-child(every) {
+    background: #fafafa;
+}
+
+.nuam-table tbody tr:hover {
+    background: #f4f4f4;
+}
+
+.nuam-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.nuam-pill--success {
+    background: rgba(60, 207, 78, 0.15);
+    color: var(--color-green);
+}
+
+.nuam-pill--warning {
+    background: rgba(255, 138, 40, 0.15);
+    color: var(--color-orange-muted);
+}
+
+.nuam-pill--error {
+    background: rgba(255, 77, 77, 0.15);
+    color: var(--color-red);
+}
+
+.nuam-status {
+    font-weight: 700;
+    color: var(--color-orange);
+}
+
+.nuam-footer {
+    margin-top: auto;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1.2rem;
+}
+
+.nuam-footer a {
+    color: var(--color-orange-soft);
+}
+
+.nuam-chart,
+.nuam-chart canvas {
+    width: 100%;
+    min-height: 220px;
+}
+
+.nuam-form {
+    display: grid;
+    gap: 16px;
+}
+
+.nuam-form label {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.nuam-input,
+.nuam-select,
+.nuam-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--radius-input);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+    font-size: 1.4rem;
+    outline: none;
+}
+
+.nuam-input:focus,
+.nuam-select:focus,
+.nuam-textarea:focus {
+    border-color: var(--color-orange-soft);
+}
+
+.nuam-table__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.nuam-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.nuam-modal__content {
+    background: var(--color-white);
+    color: var(--color-black);
+    border-radius: var(--radius-card);
+    padding: 32px;
+    min-width: min(560px, 100%);
+    box-shadow: var(--shadow-soft);
+}
+
+.nuam-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.nuam-dropzone {
+    border: 2px dashed var(--color-orange);
+    border-radius: var(--radius-card);
+    padding: 48px;
+    text-align: center;
+    background: var(--color-blue-dark);
+    color: var(--color-white);
+}
+
+.nuam-dropzone__icon {
+    font-size: 3.2rem;
+    margin-bottom: 16px;
+}
+
+.nuam-progress {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    height: 12px;
+}
+
+.nuam-progress__bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-orange), var(--color-orange-soft));
+}
+
+.nuam-timeline {
+    position: relative;
+    padding-left: 32px;
+}
+
+.nuam-timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.nuam-timeline__item {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.nuam-timeline__item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-orange);
+    border: 2px solid var(--color-black);
+}
+
+.nuam-login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top, rgba(255, 123, 0, 0.1), transparent 60%), linear-gradient(135deg, var(--color-black), var(--color-blue-dark));
+    padding: 24px;
+}
+
+.nuam-login__panel {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-card);
+    padding: 48px;
+    width: min(420px, 100%);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-frosted);
+}
+
+.nuam-login__logo {
+    text-align: center;
+    margin-bottom: 24px;
+    color: var(--color-orange);
+    letter-spacing: 1rem;
+    font-weight: 700;
+    font-size: 3.6rem;
+}
+
+.nuam-login__footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.nuam-drop-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    font-size: 1.2rem;
+    gap: 8px;
+}
+
+.nuam-drop-status--ok {
+    background: rgba(60, 207, 78, 0.15);
+    color: var(--color-green);
+}
+
+.nuam-drop-status--error {
+    background: rgba(255, 77, 77, 0.15);
+    color: var(--color-red);
+}
+
+.nuam-drop-status--warn {
+    background: rgba(255, 138, 40, 0.15);
+    color: var(--color-orange-muted);
+}
+
+.nuam-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.nuam-tabs button {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(10, 15, 31, 0.1);
+    color: var(--color-black);
+    padding: 10px 18px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+}
+
+.nuam-tabs button.is-active {
+    border-color: var(--color-orange);
+    color: var(--color-orange);
+}
+
+.nuam-badge-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 123, 0, 0.15);
+    color: var(--color-orange);
+}
+
+.nuam-table--dark thead {
+    background: var(--color-dark-alt);
+    color: var(--color-white);
+}
+
+.nuam-table--dark tbody tr {
+    background: rgba(0, 0, 0, 0.25);
+    color: var(--color-white);
+}
+
+.nuam-file-preview {
+    background: var(--color-white);
+    border-radius: var(--radius-card);
+    padding: 16px;
+    margin-top: 16px;
+    color: var(--color-black);
+}
+
+.nuam-report-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.nuam-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--color-black);
+}
+
+.nuam-kpi span {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 1.2rem;
+}
+
+.nuam-table--responsive {
+    overflow-x: auto;
+}
+
+@media (max-width: 1024px) {
+    .nuam-layout {
+        flex-direction: column;
+    }
+
+    .nuam-sidebar {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 1.4rem;
+    }
+
+    .nuam-main {
+        padding: 24px 16px;
+    }
+
+    .nuam-topbar {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .nuam-login__panel {
+        padding: 32px;
+    }
+
+    .nuam-section__header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

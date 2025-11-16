@@ -1,0 +1,108 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block page_title %}Usuarios{% endblock %}
+{% block header_title %}Gestión de usuarios{% endblock %}
+{% block header_subtitle %}Administre accesos, roles y estados de autenticación{% endblock %}
+
+{% block content %}
+<section class="nuam-card nuam-card--dark">
+    <div class="nuam-section__header">
+        <div>
+            <h2 class="nuam-card__title" style="color:#fff;">Usuarios registrados</h2>
+            <p>Control unificado para administradores, analistas y auditores.</p>
+        </div>
+        <button class="nuam-btn nuam-btn--primary">Crear usuario</button>
+    </div>
+    <div class="nuam-table__filters">
+        <input class="nuam-input" type="search" placeholder="Buscar por nombre o correo">
+        <select class="nuam-select">
+            <option>Todos los roles</option>
+            <option>Administrador</option>
+            <option>Analista</option>
+            <option>Supervisor</option>
+            <option>Auditor</option>
+        </select>
+        <select class="nuam-select">
+            <option>Todos los estados</option>
+            <option>Activo</option>
+            <option>Bloqueado</option>
+            <option>En revisión</option>
+        </select>
+    </div>
+    <div class="nuam-table--responsive">
+        <table class="nuam-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Último acceso</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Camila Ríos</td>
+                    <td>camila.rios@nuam.cl</td>
+                    <td>Analista Tributaria</td>
+                    <td><span class="nuam-pill nuam-pill--success">Activo</span></td>
+                    <td>14/11 · 09:10</td>
+                </tr>
+                <tr>
+                    <td>TI Supervisor</td>
+                    <td>supervisor.ti@nuam.cl</td>
+                    <td>Supervisor</td>
+                    <td><span class="nuam-pill nuam-pill--warning">Pendiente MFA</span></td>
+                    <td>13/11 · 17:22</td>
+                </tr>
+                <tr>
+                    <td>Constanza León</td>
+                    <td>constanza.leon@nuam.cl</td>
+                    <td>Auditoría</td>
+                    <td><span class="nuam-pill nuam-pill--error">Bloqueado</span></td>
+                    <td>12/11 · 11:47</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="nuam-modal" id="modalUsuario">
+    <div class="nuam-modal__content">
+        <div class="nuam-modal__header">
+            <div>
+                <h3>Crear nuevo usuario</h3>
+                <p>Complete los campos para habilitar el acceso.</p>
+            </div>
+            <button class="nuam-btn nuam-btn--ghost" type="button">Cerrar</button>
+        </div>
+        <form class="nuam-form">
+            <label>Nombre completo
+                <input class="nuam-input" type="text" placeholder="Ej. Andrea Fuentes">
+            </label>
+            <label>Correo
+                <input class="nuam-input" type="email" placeholder="usuario@nuam.cl">
+            </label>
+            <label>Rol
+                <select class="nuam-select">
+                    <option>Seleccionar</option>
+                    <option>Administrador</option>
+                    <option>Analista</option>
+                    <option>Auditor</option>
+                </select>
+            </label>
+            <label>Estado
+                <select class="nuam-select">
+                    <option>Activo</option>
+                    <option>Bloqueado</option>
+                    <option>En revisión</option>
+                </select>
+            </label>
+            <div style="display:flex;gap:12px;justify-content:flex-end;">
+                <button class="nuam-btn nuam-btn--ghost" type="button">Descartar</button>
+                <button class="nuam-btn nuam-btn--primary" type="submit">Guardar</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

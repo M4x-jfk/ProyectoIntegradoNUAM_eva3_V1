@@ -1,0 +1,81 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block page_title %}Carga Masiva{% endblock %}
+{% block header_title %}Carga Masiva de Datos{% endblock %}
+{% block header_subtitle %}Suba plantillas Excel para actualizar partys y calificaciones{% endblock %}
+
+{% block content %}
+<section class="nuam-grid">
+    <article class="nuam-card nuam-card--dark">
+        <div class="nuam-section__header">
+            <h3 class="nuam-card__title" style="color:#fff;">Subir archivo</h3>
+            <button class="nuam-btn nuam-btn--ghost">Descargar plantilla</button>
+        </div>
+        <div class="nuam-dropzone">
+            <div class="nuam-dropzone__icon">⇪</div>
+            <p>Arrastre y suelte su archivo .xlsx</p>
+            <p>Máx. 20 MB · Formato validado</p>
+        </div>
+        <div class="nuam-file-preview">
+            <div class="nuam-section__header" style="margin-bottom:8px;">
+                <strong>carga_partys_nov.xlsx</strong>
+                <span class="nuam-drop-status nuam-drop-status--warn">⚠ 2 advertencias</span>
+            </div>
+            <div class="nuam-progress">
+                <div class="nuam-progress__bar" style="width: 72%;"></div>
+            </div>
+            <ul>
+                <li><span class="nuam-drop-status nuam-drop-status--ok">✔ Columnas OK</span></li>
+                <li><span class="nuam-drop-status nuam-drop-status--warn">⚠ 2 filas sin RUT</span></li>
+                <li><span class="nuam-drop-status nuam-drop-status--error">✖ 1 fila duplicada</span></li>
+            </ul>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px;">
+            <button class="nuam-btn nuam-btn--ghost">Cancelar</button>
+            <button class="nuam-btn nuam-btn--primary">Procesar archivo</button>
+        </div>
+    </article>
+    <article class="nuam-card">
+        <div class="nuam-section__header">
+            <h3 class="nuam-card__title">Detalle de registros</h3>
+            <span class="nuam-pill nuam-pill--warning">120 filas detectadas</span>
+        </div>
+        <div class="nuam-table--responsive">
+            <table class="nuam-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>RUT</th>
+                        <th>Razón Social</th>
+                        <th>Estado</th>
+                        <th>Mensaje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>76.123.980-2</td>
+                        <td>Servicios Tributarios Norte</td>
+                        <td><span class="nuam-pill nuam-pill--success">✔ Correcto</span></td>
+                        <td>Validación superada</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>—</td>
+                        <td>Proveedor sin RUT</td>
+                        <td><span class="nuam-pill nuam-pill--error">✖ Error</span></td>
+                        <td>Debe incluir RUT</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>65.908.132-1</td>
+                        <td>Constructora Andes</td>
+                        <td><span class="nuam-pill nuam-pill--warning">⚠ Advertencia</span></td>
+                        <td>Actividad económica vacía</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+{% endblock %}
