@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NUAM - Sistema de Calificaciones{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/ia_powerbi.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <header class="header-main">
+        <a href="#" class="brand">NUAM <span style="font-weight:normal; font-size:0.8em; color:#666;">| IA & Automatización</span></a>
+        <nav class="nav-links">
+            <!-- Enlaces de navegación placeholder -->
+            <a href="{% url 'ia_archivos_fuente_list' %}">Archivos Fuente</a>
+            <a href="{% url 'ia_archivos_normalizados_list' %}">Normalizados</a>
+            <a href="{% url 'ia_trazabilidad' %}">Trazabilidad</a>
+            <a href="{% url 'powerbi_dashboard_general' %}">Dashboard</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        {% if messages %}
+            <div class="messages mb-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        <!-- Contenido principal de cada vista -->
+        {% endblock %}
+    </div>
+
+    <footer class="text-center mt-3" style="padding: 20px; color: #777; font-size: 0.9rem;">
+        &copy; {% now "Y" %} NUAM - Mantenedor de Calificaciones Tributarias
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,74 @@
+{% extends 'IAgents/ia/base_ia.html' %}
+
+{% block title %}Dashboard Admin TI - NUAM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Bienvenido, {{ user_name }} (Admin TI)</h1>
+    <a href="{% url 'logout' %}" class="btn btn-outline-danger">Cerrar Sesión</a>
+</div>
+
+<div class="row mb-4" style="display: flex; gap: 20px; flex-wrap: wrap;">
+    <div class="col-md-4" style="flex: 1;">
+        <div class="card text-center p-3">
+            <h3>{{ usuarios_count }}</h3>
+            <p class="text-muted">Usuarios Totales</p>
+        </div>
+    </div>
+    <div class="col-md-4" style="flex: 1;">
+        <div class="card text-center p-3">
+            <h3 class="text-success">{{ usuarios_activos }}</h3>
+            <p class="text-muted">Usuarios Activos</p>
+        </div>
+    </div>
+    <div class="col-md-4" style="flex: 1;">
+        <div class="card text-center p-3">
+            <h3>{{ roles_count }}</h3>
+            <p class="text-muted">Roles Definidos</p>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="display: flex; gap: 20px;">
+    <div class="col-md-8" style="flex: 2;">
+        <div class="card">
+            <div class="card-header">Gestión del Sistema</div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="#">Administrar Usuarios</a></li>
+                    <li class="list-group-item"><a href="#">Configuración de Roles</a></li>
+                    <li class="list-group-item"><a href="#">Logs de Auditoría</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sección IAgents -->
+        <div class="card mt-4 border-info">
+            <div class="card-header bg-info text-white">
+                IAgents - Panel de Control
+            </div>
+            <div class="card-body">
+                <p>Monitor de estado de los agentes de IA.</p>
+                <div class="alert alert-success">Todos los agentes operativos.</div>
+                <a href="#" class="btn btn-sm btn-info text-white">Configurar Agentes</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4" style="flex: 1;">
+        <div class="card">
+            <div class="card-header">Últimos Documentos</div>
+            <ul class="list-group list-group-flush">
+                {% for doc in ultimos_docs %}
+                <li class="list-group-item">
+                    <strong>{{ doc.filename }}</strong><br>
+                    <small class="text-muted">{{ doc.created_at|date:"d/m/Y H:i" }}</small>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No hay documentos recientes.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

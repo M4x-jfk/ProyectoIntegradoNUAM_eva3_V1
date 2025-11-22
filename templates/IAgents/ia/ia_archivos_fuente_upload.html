@@ -1,0 +1,37 @@
+{% extends 'IAgents/ia/base_ia.html' %}
+
+{% block title %}Subir Archivo Fuente - NUAM IA{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Subir Nuevo Archivo Fuente
+    </div>
+    <div class="card-body">
+        <p class="mb-3">Sube archivos Excel o CSV para ser procesados por el motor de IA.</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="origen">Origen del Archivo:</label>
+                <select name="origen" id="origen" class="form-control" style="max-width: 300px;">
+                    <option value="usuario">Carga Manual (Usuario)</option>
+                    <option value="sistema">Sistema Externo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="archivo">Seleccionar Archivo(s):</label>
+                <input type="file" name="archivo" id="archivo" class="form-control" multiple required>
+                <small class="text-muted">Formatos permitidos: .xlsx, .xls, .csv</small>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Subir y Procesar con IA</button>
+                <a href="{% url 'ia_archivos_fuente_list' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

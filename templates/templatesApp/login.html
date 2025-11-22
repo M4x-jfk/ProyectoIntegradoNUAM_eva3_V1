@@ -1,28 +1,46 @@
-{% extends 'templatesApp/base.html' %}
+{% extends 'IAgents/ia/base_ia.html' %}
+{% load static %}
 
-{% block page_title %}Ingreso{% endblock %}
-{% block body_class %}auth-page{% endblock %}
+{% block title %}Iniciar Sesión - NUAM{% endblock %}
 
-{% block layout %}
-<section class="nuam-login">
-    <div class="nuam-login__panel">
-        <div class="nuam-login__logo">NUAM</div>
-        <p class="nuam-tagline" style="text-align:center;">Mantenedor de Calificaciones Tributarias</p>
-        {% if error %}
-        <div class="nuam-pill nuam-pill--error" style="justify-content:center;margin-bottom:12px;">{{ error }}</div>
-        {% endif %}
-        <form class="nuam-form" method="post">
-            {% csrf_token %}
-            <label for="id_email">Correo corporativo</label>
-            <input class="nuam-input" id="id_email" type="email" name="email" placeholder="Ej: admin@nuam.cl" required>
-            <button class="nuam-btn nuam-btn--primary" type="submit">Ingresar sin contraseña</button>
-        </form>
-        <div style="margin-top:16px;text-align:center;color:#fff;">
-            Usa <strong>admin@nuam.cl</strong> o <strong>analista@nuam.cl</strong> para navegar las vistas (no se requiere contraseña en este entorno de pruebas).
-        </div>
-        <div class="nuam-login__footer">
-            Soporte: soporte@nuam.cl · +56 2 2345 6789
+{% block extra_js %}
+<script src="{% static 'js/login.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center" style="display: flex; justify-content: center; margin-top: 50px;">
+    <div class="col-md-6 col-lg-4" style="width: 100%; max-width: 400px;">
+        <div class="card shadow-sm">
+            <div class="card-header text-center bg-white border-bottom-0 pt-4">
+                <h3 style="color: var(--color-primary);">NUAM</h3>
+                <p class="text-muted">Sistema de Calificaciones</p>
+            </div>
+            <div class="card-body px-4 pb-4">
+                {% if error %}
+                <div class="alert alert-danger text-center" role="alert" style="font-size: 0.9rem;">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="username" class="form-label">Correo Electrónico</label>
+                        <input type="email" name="username" id="username" class="form-control"
+                            placeholder="nombre@ejemplo.com" required autofocus>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="••••••••"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block w-100">Ingresar</button>
+                </form>
+            </div>
+            <div class="card-footer text-center bg-light py-3">
+                <small class="text-muted">Acceso restringido a personal autorizado</small>
+            </div>
         </div>
     </div>
-</section>
+</div>
 {% endblock %}
