@@ -1,0 +1,71 @@
+{% extends 'IAgents/ia/base_ia.html' %}
+
+{% block title %}Dashboard Supervisor - NUAM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Supervisión - {{ user_name }}</h1>
+    <a href="{% url 'logout' %}" class="btn btn-outline-danger">Cerrar Sesión</a>
+</div>
+
+<div class="row mb-4" style="display: flex; gap: 20px;">
+    <div class="col-md-6" style="flex: 1;">
+        <div class="card bg-warning text-dark">
+            <div class="card-body text-center">
+                <h3>{{ calificaciones_pendientes }}</h3>
+                <p class="mb-0">Pendientes de Aprobación</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" style="flex: 1;">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h3>{{ cargas_hoy }}</h3>
+                <p class="mb-0">Cargas Masivas Hoy</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-dark text-white">
+        IAgents - Supervisión de Procesos
+    </div>
+    <div class="card-body">
+        <p>Revise las alertas generadas por la Inteligencia Artificial.</p>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Alerta</th>
+                        <th>Nivel</th>
+                        <th>Origen</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Inconsistencia en RUTs masivos</td>
+                        <td><span class="badge badge-danger">Alta</span></td>
+                        <td>Carga #1024 (IA)</td>
+                        <td><button class="btn btn-sm btn-outline-dark">Revisar</button></td>
+                    </tr>
+                    <tr>
+                        <td>Patrón de calificaciones inusual</td>
+                        <td><span class="badge badge-warning">Media</span></td>
+                        <td>Análisis IA Diario</td>
+                        <td><button class="btn btn-sm btn-outline-dark">Revisar</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Bandeja de Entrada</div>
+    <div class="card-body">
+        <p class="text-muted text-center">No hay tareas urgentes pendientes.</p>
+    </div>
+</div>
+{% endblock %}

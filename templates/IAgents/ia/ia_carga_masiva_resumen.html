@@ -1,0 +1,137 @@
+{% extends 'IAgents/ia/base_ia.html' %}
+
+{% block title %}Resumen Carga Masiva - NUAM IA{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'ia_archivos_normalizados_list' %}">Archivos Normalizados</a></li>
+        <li class="breadcrumb-item active">Carga Masiva #{{ carga.id_carga }}</li>
+    </ol>
+</nav>
+
+<div class="row mb-4" style="display: flex; gap: 20px; flex-wrap: wrap;">
+    <div class="col-md-4" style="flex: 1; min-width: 300px;">
+        <div class="card h-100">
+            <div class="card-header">Estado General</div>
+            <div class="card-body text-center">
+                <h2 class="display-4 mb-0" style="font-size: 2.5rem; margin: 10px 0;">
+                    <span class="badge estado-{{ carga.estado|slugify }}">{{ carga.get_estado_display }}</span>
+                </h2>
+                <p class="text-muted mt-2">Iniciada: {{ carga.fecha_inicio|date:"d/m/Y H:i" }}</p>
+                {% if carga.fecha_fin %}
+                <p class="text-muted">Finalizada: {{ carga.fecha_fin|date:"d/m/Y H:i" }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8" style="flex: 2; min-width: 300px;">
+        <div class="card h-100">
+            <div class="card-header">Estadísticas de Procesamiento</div>
+            <div class="card-body">
+                <div class="row text-center" style="display: flex; justify-content: space-around;">
+                    <div class="col">
+                        <h3 style="font-size: 2rem; margin-bottom: 0;">{{ carga.total_filas }}</h3>
+                        <span class="text-muted">Total Filas</span>
+                    </div>
+                    <div class="col">
+                        <h3 class="text-success"
+                            style="font-size: 2rem; margin-bottom: 0; color: var(--color-procesado);">{{ carga.filas_ok
+                            }}</h3>
+                        <span class="text-muted">Exitosas</span>
+                    </div>
+                    <div class="col">
+                        <h3 class="text-danger" style="font-size: 2rem; margin-bottom: 0; color: var(--color-error);">{{
+                            carga.filas_error }}</h3>
+                        <span class="text-muted">Con Error</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="progress"
+                        style="height: 20px; background-color: #e9ecef; border-radius: 10px; overflow: hidden;">
+                        {% widthratio carga.filas_ok carga.total_filas 100 as pct_ok %}
+                        {% widthratio carga.filas_error carga.total_filas 100 as pct_error %}
+                        <div class="progress-bar bg-success" role="progressbar"
+                            style="width: {{ pct_ok }}%; background-color: var(--color-procesado); float: left; height: 100%;">
+                        </div>
+                        <div class="progress-bar bg-danger" role="progressbar"
+                            style="width: {{ pct_error }}%; background-color: var(--color-error); float: left; height: 100%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Detalle de Ejecución</span>
+        <div>
+            <select class="form-control form-control-sm d-inline-block w-auto"
+                onchange="window.location.href='?filtro='+this.value">
+                <option value="todos">Todos los registros</option>
+                <option value="errores">Solo Errores</option>
+                <option value="exitosos">Solo Exitosos</option>
+            </select>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Fila #</th>
+                        <th>Estado</th>
+                        <th>Mensaje / Resultado</th>
+                        <th>ID Calificación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in detalles %}
+                    <tr>
+                        <td>{{ detalle.nro_fila }}</td>
+                        <td>
+                            <span class="badge estado-{{ detalle.estado|slugify }}">
+                                {{ detalle.get_estado_display }}
+                            </span>
+                        </td>
+                        <td class="{% if detalle.estado == 'rechazada' %}text-danger{% endif %}">
+                            {{ detalle.mensaje_error|default:"Procesado correctamente" }}
+                        </td>
+                        <td>
+                            {% if detalle.id_calificacion_afectada %}
+                            <a href="#">#{{ detalle.id_calificacion_afectada }}</a>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No hay detalles disponibles.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación Placeholder -->
+        <div class="p-3 text-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0"
+                    style="display: flex; justify-content: center; list-style: none; gap: 5px;">
+                    <li class="page-item disabled"><a class="page-link" href="#">Anterior</a></li>
+                    <li class="page-item active"><a class="page-link" href="#"
+                            style="background: var(--color-primary); color: white; border-color: var(--color-primary);">1</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}

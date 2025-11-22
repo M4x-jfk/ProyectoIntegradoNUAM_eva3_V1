@@ -1,12 +1,12 @@
 from django.db import models
 from django.utils import timezone
 
-
 class Rol(models.Model):
     nombre = models.CharField(max_length=60, unique=True)
     descripcion = models.TextField(null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'roles'
         verbose_name = 'Rol'
         verbose_name_plural = 'Roles'
@@ -32,6 +32,7 @@ class Usuario(models.Model):
     roles = models.ManyToManyField('Rol', through='UsuarioRol', related_name='usuarios')
 
     class Meta:
+        managed = False
         db_table = 'usuarios'
         indexes = [
             models.Index(fields=['correo'], name='idx_usuarios_correo'),
@@ -46,6 +47,7 @@ class UsuarioRol(models.Model):
     rol = models.ForeignKey(Rol, on_delete=models.CASCADE, related_name='rel_usuarios')
 
     class Meta:
+        managed = False
         db_table = 'usuario_roles'
         constraints = [
             models.UniqueConstraint(fields=['usuario', 'rol'], name='uniq_usuario_rol'),
@@ -81,6 +83,7 @@ class Documento(models.Model):
     )
 
     class Meta:
+        managed = False
         db_table = 'documentos'
 
     def __str__(self) -> str:
@@ -126,6 +129,7 @@ class Party(models.Model):
     )
 
     class Meta:
+        managed = False
         db_table = 'party'
         indexes = [
             models.Index(fields=['rut'], name='idx_party_rut'),
@@ -160,6 +164,7 @@ class ArchivoCarga(models.Model):
     )
 
     class Meta:
+        managed = False
         db_table = 'archivo_carga'
         indexes = [
             models.Index(fields=['estado'], name='idx_carga_estado'),
@@ -222,6 +227,7 @@ class Calificacion(models.Model):
     )
 
     class Meta:
+        managed = False
         db_table = 'calificaciones'
         indexes = [
             models.Index(fields=['party', 'fecha'], name='idx_calif_party_fecha'),
@@ -254,6 +260,7 @@ class ArchivoCargaDetalle(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
+        managed = False
         db_table = 'archivo_carga_detalle'
         indexes = [
             models.Index(fields=['archivo_carga', 'fila_numero'], name='idx_carga_det_fila'),
@@ -279,6 +286,7 @@ class HistorialAccion(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
+        managed = False
         db_table = 'historial_accion'
 
     def __str__(self) -> str:
@@ -315,6 +323,7 @@ class Reporte(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
+        managed = False
         db_table = 'reportes'
         indexes = [
             models.Index(fields=['tipo', 'created_at'], name='idx_reportes_tipo_fecha'),
@@ -333,6 +342,7 @@ class Sesion(models.Model):
     metadata = models.TextField(null=True, blank=True)
 
     class Meta:
+        managed = False
         db_table = 'sesiones'
 
     def __str__(self) -> str:

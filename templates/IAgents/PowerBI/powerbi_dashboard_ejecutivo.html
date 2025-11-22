@@ -1,0 +1,82 @@
+{% extends 'IAgents/ia/base_ia.html' %}
+
+{% block title %}Panel Ejecutivo - NUAM{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-4" style="color: var(--color-secondary);">Panel Ejecutivo de Calificaciones</h1>
+    <p class="lead text-muted">Visión estratégica para accionistas e inversionistas</p>
+</div>
+
+<div class="row mb-5" style="display: flex; gap: 30px; flex-wrap: wrap;">
+    <div class="col-lg-8" style="flex: 3; min-width: 400px;">
+        <div class="card shadow-sm" style="height: 100%; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div class="card-body p-0">
+                <div class="powerbi-container" style="height: 500px; background: #fff; border: none;">
+                    <div class="text-center">
+                        <p style="font-size: 3rem; margin-bottom: 10px;">📈</p>
+                        <p>Gráfico Principal de Tendencias (Power BI)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4" style="flex: 1; min-width: 250px;">
+        <div class="card mb-3" style="border-left: 5px solid var(--color-primary);">
+            <div class="card-body">
+                <h5 class="text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Emisores Evaluados
+                </h5>
+                <h2 class="mb-0">342</h2>
+                <small class="text-success">↑ 5% vs mes anterior</small>
+            </div>
+        </div>
+
+        <div class="card mb-3" style="border-left: 5px solid var(--color-procesado);">
+            <div class="card-body">
+                <h5 class="text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Calificaciones
+                    Aprobadas</h5>
+                <h2 class="mb-0">1,105</h2>
+                <small class="text-muted">YTD 2023</small>
+            </div>
+        </div>
+
+        <div class="card mb-3" style="border-left: 5px solid var(--color-pendiente);">
+            <div class="card-body">
+                <h5 class="text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">En Revisión</h5>
+                <h2 class="mb-0">12</h2>
+                <small class="text-muted">Requieren atención</small>
+            </div>
+        </div>
+
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6>Reportes Descargables</h6>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><a href="#">📄 Informe Mensual (PDF)</a></li>
+                    <li class="mb-2"><a href="#">📊 Sabana de Datos (Excel)</a></li>
+                    <li><a href="#">📉 Análisis de Riesgo</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Resumen de Mercado</h5>
+                <p>
+                    El mercado ha mostrado una tendencia estable en el último trimestre. Las calificaciones del sector
+                    bancario se mantienen sólidas,
+                    mientras que se observa una leve volatilidad en el sector retail. Este panel se actualiza
+                    diariamente con los datos procesados
+                    por nuestro motor de Inteligencia Artificial NUAM.
+                </p>
+                <p class="text-muted text-right mb-0"><small>Última actualización: {% now "d/m/Y H:i" %}</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
