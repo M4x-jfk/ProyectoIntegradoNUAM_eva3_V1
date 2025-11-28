@@ -1,0 +1,13 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Documentos{% endblock %}
+{% block content %}
+<h1>Documentos</h1>
+<a href="{% url 'documentos_upload' %}">Subir documento</a>
+<ul>
+    {% for d in documentos %}
+    <li>{{ d.ruta_archivo }} (v{{ d.version }})</li>
+    {% empty %}
+    <li>reporte_calificaciones_enero.pdf (v1) — <em>Ejemplo demostrativo</em></li>
+    {% endfor %}
+</ul>
+{% endblock %}

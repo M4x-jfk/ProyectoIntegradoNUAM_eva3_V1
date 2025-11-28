@@ -1,0 +1,22 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Dashboard Ejecutivo{% endblock %}
+{% block content %}
+<h1>Dashboard Ejecutivo (HU07)</h1>
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-label">Calificaciones vigentes</div>
+        <div class="kpi-value">{{ total_calificaciones }}</div>
+        <div class="kpi-sub">Portafolio vigente</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Tendencia anual</div>
+        <div class="kpi-value">+5.4%</div>
+        <div class="kpi-sub">Variacion YoY (demo)</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Puntaje promedio</div>
+        <div class="kpi-value">AA-</div>
+        <div class="kpi-sub">Estimado (demo)</div>
+    </div>
+</div>
+{% endblock %}

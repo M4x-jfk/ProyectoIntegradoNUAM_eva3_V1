@@ -1,0 +1,20 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Auditoría{% endblock %}
+{% block content %}
+<h1>Auditoría global (HU10)</h1>
+<table>
+    <thead><tr><th>Fecha</th><th>Acción</th><th>Actor</th><th>Objeto</th></tr></thead>
+    <tbody>
+    {% for e in eventos %}
+        <tr>
+            <td>{{ e.created_at }}</td>
+            <td>{{ e.accion }}</td>
+            <td>{{ e.actor }}</td>
+            <td>{{ e.objeto }} {{ e.objeto_id }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="4">Sin eventos.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<h1>Usuarios</h1>
+<div style="margin-bottom:12px;">
+    <a href="{% url 'usuarios_create' %}" class="btn">Crear nuevo usuario</a>
+</div>
+<table>
+    <thead><tr><th>Nombre</th><th>Correo</th><th>Estado</th><th>Roles</th><th></th></tr></thead>
+    <tbody>
+    {% for u in usuarios %}
+        <tr>
+            <td>{{ u.nombre|default:u.username }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.estado }}</td>
+            <td>{{ u.roles.all|join:", " }}</td>
+            <td>
+                <a href="{% url 'usuarios_update' u.pk %}">Editar</a>
+                <form method="post" action="{% url 'usuarios_toggle_estado' u.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <select name="estado">
+                        {% for key,label in u.Estado.choices %}
+                        <option value="{{ key }}" {% if key == u.estado %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Cambiar</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">Sin usuarios.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

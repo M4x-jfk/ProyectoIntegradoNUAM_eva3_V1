@@ -10,9 +10,9 @@ class RolAdmin(admin.ModelAdmin):
 
 @admin.register(models.Usuario)
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('correo', 'nombre', 'estado', 'last_login_at')
+    list_display = ('username', 'email', 'nombre', 'estado', 'last_login')
     list_filter = ('estado',)
-    search_fields = ('correo', 'nombre')
+    search_fields = ('username', 'email', 'nombre', 'apellido')
 
 
 @admin.register(models.UsuarioRol)
@@ -22,16 +22,16 @@ class UsuarioRolAdmin(admin.ModelAdmin):
 
 @admin.register(models.Documento)
 class DocumentoAdmin(admin.ModelAdmin):
-    list_display = ('filename', 'formato', 'size_bytes', 'created_at')
-    list_filter = ('formato',)
-    search_fields = ('filename', 'storage_uri')
+    list_display = ('id_documento', 'tipo_documento', 'ruta_archivo', 'version', 'fecha_creacion')
+    list_filter = ('visibilidad',)
+    search_fields = ('ruta_archivo', 'tipo_documento')
 
 
-@admin.register(models.Party)
-class PartyAdmin(admin.ModelAdmin):
-    list_display = ('nombre_legal', 'rut', 'tipo', 'email_contacto')
-    list_filter = ('tipo',)
-    search_fields = ('nombre_legal', 'rut')
+@admin.register(models.Emisor)
+class EmisorAdmin(admin.ModelAdmin):
+    list_display = ('id_emisor', 'nombre', 'rut', 'tipo_emisor', 'estado')
+    list_filter = ('estado', 'tipo_emisor')
+    search_fields = ('nombre', 'rut')
 
 
 @admin.register(models.ArchivoCarga)
@@ -43,9 +43,9 @@ class ArchivoCargaAdmin(admin.ModelAdmin):
 
 @admin.register(models.Calificacion)
 class CalificacionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'party', 'monto', 'estado', 'fuente', 'fecha')
-    list_filter = ('estado', 'fuente')
-    search_fields = ('id', 'party__nombre_legal')
+    list_display = ('id_calificacion', 'emisor', 'instrumento', 'anio', 'monto', 'estado_registro', 'origen')
+    list_filter = ('estado_registro', 'origen')
+    search_fields = ('id_calificacion', 'emisor__nombre')
 
 
 @admin.register(models.ArchivoCargaDetalle)

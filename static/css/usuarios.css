@@ -1,0 +1,23 @@
+@import url('./ia_powerbi.css');
+
+/* Estilos de usuarios (HU09-HU11) */
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--orange-strong));
+    color: var(--white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+.role-pill {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.08);
+    margin-right: 6px;
+    font-size: 0.85rem;
+    color: var(--charcoal);
+}

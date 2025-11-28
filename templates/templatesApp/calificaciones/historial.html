@@ -1,0 +1,11 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Historial calificación{% endblock %}
+{% block content %}
+<h1>Historial</h1>
+<ul>
+    {% for h in historial %}
+    <li>{{ h.created_at }} - {{ h.get_accion_display }} - {{ h.usuario }} - {{ h.detalle }}</li>
+    {% empty %}
+    <li>Sin historial.</li>
+    {% endfor %}
+{% endblock %}

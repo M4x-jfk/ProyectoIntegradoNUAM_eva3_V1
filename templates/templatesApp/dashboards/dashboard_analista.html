@@ -1,0 +1,32 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Dashboard Analista{% endblock %}
+{% block content %}
+<h1>Dashboard Analista (HU07)</h1>
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-label">Cargas en proceso</div>
+        <div class="kpi-value">{{ cargas_pendientes }}</div>
+        <div class="kpi-sub">Revisar trazabilidad</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Cargas fallidas</div>
+        <div class="kpi-value">{{ cargas_fallidas }}</div>
+        <div class="kpi-sub">Priorizar corrección</div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">Mis documentos recientes</div>
+    <div class="card-body">
+        <table>
+            <thead><tr><th>Archivo</th><th>Fecha</th></tr></thead>
+            <tbody>
+            {% for d in mis_docs %}
+                <tr><td>{{ d.ruta_archivo }}</td><td>{{ d.fecha_creacion }}</td></tr>
+            {% empty %}
+                <tr><td>plantilla_calif.xlsx</td><td>2025-02-01</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

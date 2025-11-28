@@ -1,0 +1,21 @@
+{% if request.user.is_authenticated %}
+<header class="navbar">
+    <div class="navbar-left">
+        <strong>NUAM</strong>
+    </div>
+    <div class="navbar-right" style="display:flex;align-items:center;gap:12px;">
+        {% if session_roles %}
+            <form action="{% url 'switch_role' %}" method="post" style="margin:0;">
+                {% csrf_token %}
+                <select name="role" onchange="this.form.submit()" style="padding:6px 8px;border-radius:8px;border:1px solid #fff;color:#111;">
+                    {% for role in session_roles %}
+                        <option value="{{ role }}" {% if role == active_role %}selected{% endif %}>{{ role }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        {% endif %}
+        <span>{{ request.user.nombre|default:"Usuario" }}</span>
+        <a href="{% url 'logout' %}">Salir</a>
+    </div>
+</header>
+{% endif %}

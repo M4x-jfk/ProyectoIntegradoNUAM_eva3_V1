@@ -1,0 +1,5 @@
+@import url('./ia_powerbi.css');
+
+/* Estilos de auditoria (HU10, HU20) */
+.audit-table { font-size: 0.95rem; }
+.audit-table th { text-transform: uppercase; letter-spacing: 0.03em; }

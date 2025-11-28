@@ -1,0 +1,38 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Dashboard Admin{% endblock %}
+{% block content %}
+<h1>Dashboard Admin TI (HU07)</h1>
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="kpi-label">Usuarios totales</div>
+        <div class="kpi-value">{{ usuarios_count }}</div>
+        <div class="kpi-sub">Activos: {{ usuarios_activos }}</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Roles configurados</div>
+        <div class="kpi-value">{{ roles_count }}</div>
+        <div class="kpi-sub">Control de accesos</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-label">Documentos recientes</div>
+        <div class="kpi-value">{{ ultimos_docs|length }}</div>
+        <div class="kpi-sub">Últimos 5 cargados</div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">Últimos documentos</div>
+    <div class="card-body">
+        <table>
+            <thead><tr><th>Archivo</th><th>Fecha</th></tr></thead>
+            <tbody>
+            {% for d in ultimos_docs %}
+                <tr><td>{{ d.ruta_archivo }}</td><td>{{ d.fecha_creacion }}</td></tr>
+            {% empty %}
+                <tr><td>reporte_calificaciones_enero.pdf</td><td>2025-01-10</td></tr>
+                <tr><td>informe_ejecutivo_q1.pdf</td><td>2025-03-05</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
