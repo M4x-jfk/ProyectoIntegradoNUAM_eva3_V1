@@ -1,0 +1,19 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Logs y Backups{% endblock %}
+{% block content %}
+<h1>Logs y Backups (HU20)</h1>
+{% if backup %}
+    <p>Último backup: {{ backup.ultimo_backup }} - Estado: {{ backup.estado }}</p>
+    <p>{{ backup.mensaje }}</p>
+{% else %}
+    <p>Sin registros de backup.</p>
+{% endif %}
+<h3>Reglas activas</h3>
+<ul>
+    {% for r in reglas %}
+    <li>{{ r.nombre }} - {{ r.descripcion }}</li>
+    {% empty %}
+    <li>Sin reglas configuradas.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,21 +1,17 @@
 from django.urls import path
-from . import views_ia
+from appNuam.views.future_views import (
+    CargaMasivaPlaceholderView,
+    IAPipelinePlaceholderView,
+    FuturePowerBIPlaceholderView,
+)
 
 urlpatterns = [
-    # Archivos Fuente
-    path('ia/archivos/subir/', views_ia.ia_archivos_fuente_upload, name='ia_archivos_fuente_upload'),
-    path('ia/archivos/', views_ia.ia_archivos_fuente_list, name='ia_archivos_fuente_list'),
-    path('ia/archivos/<int:pk>/', views_ia.ia_archivos_fuente_detail, name='ia_archivos_fuente_detail'),
+    # Futuras versiones IA/ETL/HU21-HU30 y cargas masivas HU04/HU12
+    path('ia/', IAPipelinePlaceholderView.as_view(), name='ia_placeholder'),
+    path('ia/carga-masiva/<int:pk>/', CargaMasivaPlaceholderView.as_view(), name='ia_carga_masiva_resumen'),
+    path('ia/trazabilidad/', IAPipelinePlaceholderView.as_view(), name='ia_trazabilidad'),
 
-    # Archivos Normalizados & Validación
-    path('ia/normalizados/', views_ia.ia_archivos_normalizados_list, name='ia_archivos_normalizados_list'),
-    path('ia/validacion/<int:pk>/', views_ia.ia_validacion_archivo, name='ia_validacion_archivo'),
-
-    # Carga Masiva & Trazabilidad
-    path('ia/carga-masiva/<int:pk>/', views_ia.ia_carga_masiva_resumen, name='ia_carga_masiva_resumen'),
-    path('ia/trazabilidad/', views_ia.ia_trazabilidad, name='ia_trazabilidad'),
-
-    # Power BI
-    path('powerbi/general/', views_ia.powerbi_dashboard_general, name='powerbi_dashboard_general'),
-    path('powerbi/ejecutivo/', views_ia.powerbi_dashboard_ejecutivo, name='powerbi_dashboard_ejecutivo'),
+    # Power BI placeholder HU28
+    path('powerbi/general/', FuturePowerBIPlaceholderView.as_view(), name='powerbi_dashboard_general'),
+    path('powerbi/ejecutivo/', FuturePowerBIPlaceholderView.as_view(), name='powerbi_dashboard_ejecutivo'),
 ]

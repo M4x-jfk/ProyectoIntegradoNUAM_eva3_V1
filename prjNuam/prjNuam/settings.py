@@ -47,6 +47,19 @@ INSTALLED_APPS = [
     'appNuam',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'appNuam.auth_backends.SHA256Backend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+LAST_LOGIN_FIELD = None  # evita escribir un campo last_login inexistente
+
+# CSRF para entorno local
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -70,6 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'appNuam.context_processors.roles_context',
             ],
         },
     },
@@ -127,7 +141,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/stable/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR.parent / 'static']
 
 

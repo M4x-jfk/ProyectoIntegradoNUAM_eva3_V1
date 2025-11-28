@@ -1,0 +1,6 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Cerrar sesión{% endblock %}
+{% block content %}
+<h1>¿Deseas cerrar sesión?</h1>
+<a href="{% url 'logout' %}">Sí, salir</a>
+{% endblock %}

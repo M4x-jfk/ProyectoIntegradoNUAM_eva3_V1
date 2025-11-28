@@ -1,0 +1,15 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Aprobaciones{% endblock %}
+{% block content %}
+<h1>Aprobaciones pendientes</h1>
+<ul>
+    {% for a in aprobaciones %}
+    <li>
+        Calificación {{ a.calificacion_id }} - Estado: {{ a.estado }}
+        <a href="{% url 'aprobaciones_update' a.pk %}">Revisar</a>
+    </li>
+    {% empty %}
+    <li>No hay aprobaciones pendientes.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

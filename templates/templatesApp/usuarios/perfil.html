@@ -1,0 +1,8 @@
+{% extends 'templatesApp/base.html' %}
+{% block title %}Perfil{% endblock %}
+{% block content %}
+<h1>Perfil</h1>
+<p>Nombre: {{ usuario.nombre }}</p>
+<p>Correo: {{ usuario.correo }}</p>
+<p>Roles: {{ usuario.roles.all|join:", " }}</p>
+{% endblock %}
