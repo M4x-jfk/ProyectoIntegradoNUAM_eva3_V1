@@ -1,0 +1,47 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Calificación tributaria{% endblock %}
+{% block page_title %}Calificación tributaria{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link" href="{% url 'contador_dashboard' %}">Dashboard</a></li>
+    <li><a class="nav-link" href="{% url 'contador_calificaciones' %}">Calificaciones</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:720px;">
+    <h3 style="margin:0 0 12px;">Formulario</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <label>Emisor</label>
+        {{ form.emisor }}
+
+        <label>Instrumento</label>
+        {{ form.instrumento }}
+
+        <label>Año</label>
+        {{ form.anio }}
+
+        <label>Monto</label>
+        {{ form.monto }}
+
+        <label>Factor</label>
+        {{ form.factor }}
+
+        <label>Rating</label>
+        {{ form.rating }}
+
+        <label>Estado de proceso</label>
+        {{ form.estado_proceso }}
+
+        <label>Motivo de rechazo (si aplica)</label>
+        {{ form.motivo_rechazo }}
+
+        <label>Contador responsable</label>
+        {{ form.contador_responsable }}
+
+        <button class="btn" type="submit">Guardar</button>
+    </form>
+</div>
+{% endblock %}

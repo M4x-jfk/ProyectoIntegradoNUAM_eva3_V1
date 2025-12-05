@@ -1,9 +1,0 @@
-{% extends 'templatesApp/base.html' %}
-{% block title %}Detalle documento{% endblock %}
-{% block content %}
-<h1>{{ documento.filename }}</h1>
-<p>Tipo: {{ documento.mime_type }}</p>
-<p>Formato: {{ documento.formato }}</p>
-<p>Versión: {{ documento.version }}</p>
-<p>Subido por: {{ documento.created_by }}</p>
-{% endblock %}

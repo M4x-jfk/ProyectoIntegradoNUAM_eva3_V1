@@ -1,0 +1,18 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Dashboard Admin_TI{% endblock %}
+{% block page_title %}Dashboard Admin_TI{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link active" href="{% url 'admin_ti_dashboard' %}">Dashboard</a></li>
+    <li><a class="nav-link" href="{% url 'admin_ti_usuarios' %}">Usuarios internos</a></li>
+    <li><a class="nav-link" href="{% url 'admin_ti_emisores' %}">Emisores</a></li>
+    <li><a class="nav-link" href="{% url 'landing_indicadores' %}">Indicadores</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>Resumen rápido</h3>
+    <p class="muted">Panel para alta de usuarios, emisores, contadores y representantes.</p>
+</div>
+{% endblock %}

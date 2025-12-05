@@ -1,0 +1,32 @@
+{% extends "templatesApp/base_public.html" %}
+
+{% block title %}Registro externo · NUAM{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:540px;">
+    <h3 style="margin:0 0 12px;">Crear cuenta (Accionista / Inversionista)</h3>
+    <p class="muted" style="margin:0 0 12px;">Solo se permiten roles externos. Las cuentas internas se gestionan por ADMIN_TI.</p>
+    <form method="post">
+        {% csrf_token %}
+        <label>Nombre</label>
+        <input type="text" name="nombre" placeholder="Nombre">
+
+        <label>Apellido</label>
+        <input type="text" name="apellido" placeholder="Apellido">
+
+        <label>Email</label>
+        <input type="email" name="email" placeholder="usuario@dominio.com">
+
+        <label>Rol</label>
+        <select name="rol">
+            <option value="ACCIONISTA">Accionista</option>
+            <option value="INVERSIONISTA">Inversionista</option>
+        </select>
+
+        <label>Contraseña</label>
+        <input type="password" name="password" placeholder="••••••">
+
+        <button class="btn" type="submit">Crear cuenta</button>
+    </form>
+</div>
+{% endblock %}

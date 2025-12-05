@@ -41,8 +41,8 @@ class ArchivoCargaAdmin(admin.ModelAdmin):
     search_fields = ('documento__filename',)
 
 
-@admin.register(models.Calificacion)
-class CalificacionAdmin(admin.ModelAdmin):
+@admin.register(models.CalificacionTributaria)
+class CalificacionTributariaAdmin(admin.ModelAdmin):
     list_display = ('id_calificacion', 'emisor', 'instrumento', 'anio', 'monto', 'estado_registro', 'origen')
     list_filter = ('estado_registro', 'origen')
     search_fields = ('id_calificacion', 'emisor__nombre')

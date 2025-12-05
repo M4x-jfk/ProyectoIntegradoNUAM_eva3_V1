@@ -1,0 +1,44 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NUAM – Mantenedor de Calificaciones Tributarias</title>
+    <link rel="stylesheet" href="{% static 'css/landing_indicadores.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="page">
+        <div class="container">
+            <div class="header">
+                <h1 class="title">Indicadores económicos NUAM</h1>
+                <p class="subtitle">
+                    Visualización de moneda local vs USD y principales indicadores (UF, UTM, etc.) para Chile, Colombia y Perú.
+                    Datos en línea usando APIs públicas.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="section-label">País</div>
+                <div class="pill-group" data-pais-buttons></div>
+
+                <div class="section-label">Indicador</div>
+                <div class="pill-group" data-indicador-buttons></div>
+
+                <div class="chart-wrapper">
+                    <canvas id="indicadorChart"></canvas>
+                    <div class="legend">
+                        <span class="legend-dot"></span>
+                        <span>Serie temporal (últimos ~30 días)</span>
+                    </div>
+                </div>
+
+                <div class="status-text" data-status>Listo para visualizar indicadores.</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/landing_indicadores.js' %}"></script>
+</body>
+</html>

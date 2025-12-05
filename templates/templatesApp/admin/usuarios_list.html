@@ -1,0 +1,34 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Usuarios internos{% endblock %}
+{% block page_title %}Usuarios internos{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link" href="{% url 'admin_ti_dashboard' %}">Dashboard</a></li>
+    <li><a class="nav-link active" href="{% url 'admin_ti_usuarios' %}">Usuarios internos</a></li>
+    <li><a class="nav-link" href="{% url 'admin_ti_emisores' %}">Emisores</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0;">Usuarios internos</h3>
+        <button class="btn">Crear usuario</button>
+    </div>
+    <table class="table" style="margin-top:12px;">
+        <thead>
+            <tr>
+                <th>Usuario</th><th>Correo</th><th>Roles</th><th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="muted">Ejemplo</td>
+                <td class="muted">usuario@nuam.cl</td>
+                <td><span class="badge">ADMIN_TI</span></td>
+                <td><span class="badge orange">activo</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Dashboard Inversionista{% endblock %}
+{% block page_title %}Dashboard Inversionista{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link active" href="{% url 'inversionista_dashboard' %}">Dashboard</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>Emisores asociados</h3>
+    <ul class="nav-list">
+        {% for em in emisores %}
+        <li><a class="nav-link" href="{% url 'emisor_calificaciones' em.id %}">{{ em.nombre }}</a></li>
+        {% empty %}
+        <li class="nav-link muted">Sin emisores asignados.</li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="card">
+    <h3>Calificaciones recientes</h3>
+    <table class="table">
+        <thead><tr><th>Emisor</th><th>Año</th><th>Estado</th></tr></thead>
+        <tbody>
+            {% for c in calificaciones %}
+            <tr>
+                <td>{{ c.emisor }}</td>
+                <td>{{ c.anio }}</td>
+                <td><span class="badge">{{ c.estado_proceso }}</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="muted">No hay registros.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

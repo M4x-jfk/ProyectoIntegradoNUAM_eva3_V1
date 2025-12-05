@@ -1,0 +1,37 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Contadores por emisor{% endblock %}
+{% block page_title %}Contadores · {{ emisor.nombre }}{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link" href="{% url 'admin_ti_dashboard' %}">Dashboard</a></li>
+    <li><a class="nav-link" href="{% url 'admin_ti_emisores' %}">Emisores</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0;">Asignaciones de contadores</h3>
+        <button class="btn">Asignar contador</button>
+    </div>
+    <table class="table" style="margin-top:12px;">
+        <thead>
+            <tr>
+                <th>Contador</th><th>Rol relación</th><th>Inicio</th><th>Fin</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rel in asignaciones %}
+            <tr>
+                <td>{{ rel.contador.nombre_completo }}</td>
+                <td class="muted">{{ rel.rol_relacion }}</td>
+                <td class="muted">{{ rel.fecha_inicio }}</td>
+                <td class="muted">{{ rel.fecha_fin }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="muted">Sin contadores asignados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

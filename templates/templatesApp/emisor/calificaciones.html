@@ -1,0 +1,31 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Calificaciones del emisor{% endblock %}
+{% block page_title %}Calificaciones · {{ emisor.nombre }}{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link" href="{% url 'accionista_dashboard' %}">Accionista</a></li>
+    <li><a class="nav-link" href="{% url 'inversionista_dashboard' %}">Inversionista</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>Calificaciones</h3>
+    <table class="table">
+        <thead><tr><th>Año</th><th>Instrumento</th><th>Monto</th><th>Estado</th><th>Motivo rechazo</th></tr></thead>
+        <tbody>
+            {% for c in calificaciones %}
+            <tr>
+                <td>{{ c.anio }}</td>
+                <td class="muted">{{ c.instrumento }}</td>
+                <td>{{ c.monto }}</td>
+                <td><span class="badge">{{ c.estado_proceso }}</span></td>
+                <td class="muted">{{ c.motivo_rechazo }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="muted">Sin calificaciones disponibles.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

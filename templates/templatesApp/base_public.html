@@ -1,0 +1,19 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}NUAM{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/nuam_base.css' %}">
+</head>
+<body>
+    <div class="content" style="max-width: 1100px; margin: 0 auto; padding: 32px 18px 60px;">
+        {% block content %}{% endblock %}
+        <div style="margin-top:40px; color:#475569; font-size:13px;">
+            &copy; NUAM · Plataforma de calificaciones tributarias
+        </div>
+    </div>
+    <script src="{% static 'js/nuam_base.js' %}"></script>
+</body>
+</html>

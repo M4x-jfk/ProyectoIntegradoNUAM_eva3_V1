@@ -1,0 +1,278 @@
+{% extends "templatesApp/base_public.html" %}
+
+{% block title %}Mantenedor de Calificaciones Tributarias - NUAM{% endblock %}
+
+{% block content %}
+<section class="card" style="padding: 28px; margin-bottom: 22px;">
+    <div style="display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between;">
+        <div style="flex:1 1 420px;">
+            <p class="muted" style="margin:0 0 8px; font-weight:700; letter-spacing:0.05em;">PLATAFORMA NUAM</p>
+            <h1 style="margin:0 0 10px; font-size:32px; color: var(--accent-orange-strong);">
+                Mantenedor de Calificaciones Tributarias de NUAM
+            </h1>
+            <p style="margin:0 0 16px; font-size:17px; color: var(--muted);">
+                Optimizacion, seguridad y trazabilidad para el proceso tributario anual.
+            </p>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                <a class="btn" href="{% url 'login' %}">Iniciar sesion</a>
+                <a class="btn secondary" href="{% url 'registro_externo' %}">Crear cuenta Accionista/Inversionista</a>
+            </div>
+        </div>
+        <div style="flex:1 1 320px; background: var(--panel-2); border:1px solid var(--border); border-radius:16px; padding:16px;">
+            <p class="muted" style="margin:0 0 6px; font-weight:700;">Roles y accesos</p>
+            <ul style="margin:0; padding-left:18px; color:var(--text); line-height:1.5;">
+                <li>Administrador TI: alta de usuarios internos, emisores, contadores y representantes.</li>
+                <li>Supervisor: controla estados, rechazos y anulaciones.</li>
+                <li>Contador/Analista: crea y edita calificaciones de emisores asignados.</li>
+                <li>Accionista/Inversionista: consulta calificaciones y sube PDFs por emisor.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section id="indicadores-embed" class="card" style="padding: 24px; border-left: 4px solid var(--accent-orange-strong);">
+    <h3 style="margin:0 0 10px; color: var(--accent-orange-strong);">Indicadores economicos en tiempo casi real</h3>
+    <p class="muted" style="margin:0 0 12px;">
+        Consulta USD/CLP, USD/COP, USD/PEN y los indicadores UF/UTM de Chile con graficos interactivos (Chart.js) y datos de APIs publicas sin salir de la landing.
+    </p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <div style="flex:1 1 220px;">
+            <p class="muted" style="margin:0 0 6px; font-weight:700;">Pais</p>
+            <div class="pill-group" data-landing-pais-buttons></div>
+        </div>
+        <div style="flex:1 1 220px;">
+            <p class="muted" style="margin:0 0 6px; font-weight:700;">Indicador</p>
+            <div class="pill-group" data-landing-indicador-buttons></div>
+        </div>
+    </div>
+    <div style="background: var(--panel-2); border:1px solid var(--border); border-radius:16px; padding:14px;">
+        <canvas id="landingIndicadorChart"></canvas>
+        <p class="muted" data-landing-status style="text-align:center; margin:10px 0 0;">Listo para cargar datos.</p>
+    </div>
+</section>
+
+<section class="card" style="padding: 24px;">
+    <h3 style="margin:0 0 10px; color: var(--accent-orange-strong);">Que es NUAM?</h3>
+    <p class="muted" style="margin:0 0 8px;">
+        NUAM es el holding regional que integra las bolsas de Santiago, Lima y Colombia, con el objetivo de construir
+        un mercado de capitales unificado, eficiente y global. La modernizacion tecnologica y la ciberseguridad son
+        pilares estrategicos en sus operaciones.
+    </p>
+</section>
+
+<section class="card" style="padding: 24px;">
+    <h3 style="margin:0 0 10px; color: var(--accent-orange-strong);">Problematica actual</h3>
+    <p class="muted" style="margin:0 0 10px;">
+        Fuentes externas en PDF no estandarizado impiden la automatizacion y generan:
+    </p>
+    <ul class="nav-list" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <li><div class="nav-link">Retrasos y reprocesos.</div></li>
+        <li><div class="nav-link">Errores humanos en el ingreso.</div></li>
+        <li><div class="nav-link">Dificultad para consolidar informacion.</div></li>
+        <li><div class="nav-link">Falta de trazabilidad completa.</div></li>
+    </ul>
+</section>
+
+<section class="card" style="padding: 24px;">
+    <h3 style="margin:0 0 10px; color: var(--accent-orange-strong);">La solucion propuesta</h3>
+    <p class="muted" style="margin:0 0 12px;">
+        El Mantenedor de Calificaciones Tributarias estandariza, gestiona y asegura el flujo tributario anual:
+    </p>
+    <ul class="nav-list" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+        <li><div class="nav-link">Ingreso manual y carga masiva de calificaciones.</div></li>
+        <li><div class="nav-link">Validaciones de consistencia y control de calidad.</div></li>
+        <li><div class="nav-link">Consulta y filtrado avanzado.</div></li>
+        <li><div class="nav-link">Exportacion de reportes y certificados.</div></li>
+        <li><div class="nav-link">Historial de cambios y auditoria por registro.</div></li>
+        <li><div class="nav-link">Gestion de roles y permisos (RBAC).</div></li>
+    </ul>
+</section>
+
+<section class="card" style="padding: 24px;">
+    <h3 style="margin:0 0 10px; color: var(--accent-orange-strong);">Beneficios clave</h3>
+    <ul class="nav-list" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <li><div class="nav-link">Reduccion de tiempo y errores.</div></li>
+        <li><div class="nav-link">Cumplimiento normativo adaptable.</div></li>
+        <li><div class="nav-link">Seguridad by design (cifrado, auditoria, RBAC).</div></li>
+        <li><div class="nav-link">Transparencia total con bitacora e historial.</div></li>
+        <li><div class="nav-link">Acceso a historicos ante fiscalizaciones.</div></li>
+    </ul>
+</section>
+
+<section class="card" style="padding: 24px;">
+    <h3 style="margin:0 0 10px; color: var(--accent-orange-strong);">Funcionalidades principales</h3>
+    <ul class="nav-list" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+        <li><div class="nav-link">CRUD completo de calificaciones.</div></li>
+        <li><div class="nav-link">Carga masiva con archivo estandarizado.</div></li>
+        <li><div class="nav-link">Validacion automatica y reporte de errores.</div></li>
+        <li><div class="nav-link">Busqueda avanzada (fecha, monto, factor...).</div></li>
+        <li><div class="nav-link">Descarga de certificados asociados.</div></li>
+        <li><div class="nav-link">Historial detallado de modificaciones.</div></li>
+        <li><div class="nav-link">Copias de seguridad automaticas.</div></li>
+        <li><div class="nav-link">Roles: Admin TI, Analista, Supervisor, Accionista, Inversionista.</div></li>
+    </ul>
+</section>
+
+<section class="card" style="padding: 24px;">
+    <h3 style="margin:0 0 10px; color: var(--accent-orange-strong);">Seguridad y cumplimiento</h3>
+    <ul class="nav-list" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <li><div class="nav-link">Security & Privacy by Design.</div></li>
+        <li><div class="nav-link">Cifrado en transito (TLS/HTTPS) y en reposo.</div></li>
+        <li><div class="nav-link">Bitacora activa de acciones criticas.</div></li>
+        <li><div class="nav-link">Control de accesos basado en roles (RBAC).</div></li>
+        <li><div class="nav-link">Retencion y almacenamiento historico conforme normativa.</div></li>
+    </ul>
+</section>
+
+<section class="card" style="padding: 24px;">
+    <h3 style="margin:0 0 10px; color: var(--accent-orange-strong);">Tecnologia utilizada</h3>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+        <div class="nav-link">Backend: Python / Django</div>
+        <div class="nav-link">Base de datos: PostgreSQL con auditoria y vistas</div>
+        <div class="nav-link">Frontend: HTML, CSS, JS</div>
+        <div class="nav-link">Infraestructura: despliegue en AWS</div>
+    </div>
+</section>
+
+<style>
+    .pill-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .pill-btn-landing {
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.08s ease, box-shadow 0.12s ease, border 0.12s ease;
+    }
+    .pill-btn-landing:hover {
+        transform: translateY(-1px);
+        border-color: rgba(249, 115, 22, 0.5);
+        box-shadow: 0 8px 20px rgba(234, 88, 12, 0.12);
+    }
+    .pill-btn-landing.active {
+        background: linear-gradient(135deg, var(--accent-orange), var(--accent-amber));
+        color: #0b1020;
+        box-shadow: 0 10px 24px rgba(234, 88, 12, 0.25);
+        border-color: transparent;
+    }
+    #landingIndicadorChart {
+        width: 100% !important;
+        max-height: 360px;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(() => {
+    const PAISES = {
+        chile: { nombre: "Chile", indicadores: [{ codigo: "usd", etiqueta: "USD / CLP" }, { codigo: "uf", etiqueta: "UF" }, { codigo: "utm", etiqueta: "UTM" }] },
+        colombia: { nombre: "Colombia", indicadores: [{ codigo: "usd", etiqueta: "USD / COP" }] },
+        peru: { nombre: "Peru", indicadores: [{ codigo: "usd", etiqueta: "USD / PEN" }] },
+    };
+    const state = { pais: "chile", indicador: "usd" };
+    const paisContainer = document.querySelector("[data-landing-pais-buttons]");
+    const indContainer = document.querySelector("[data-landing-indicador-buttons]");
+    const statusEl = document.querySelector("[data-landing-status]");
+    const canvas = document.getElementById("landingIndicadorChart");
+    if (!paisContainer || !indContainer || !statusEl || !canvas) return;
+    let chart;
+
+    function createButton(text, active, onClick) {
+        const btn = document.createElement("button");
+        btn.className = "pill-btn-landing";
+        if (active) btn.classList.add("active");
+        btn.textContent = text;
+        btn.addEventListener("click", () => {
+            onClick();
+            btn.parentElement.querySelectorAll(".pill-btn-landing").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+        });
+        return btn;
+    }
+
+    function renderPaisButtons() {
+        paisContainer.innerHTML = "";
+        Object.entries(PAISES).forEach(([code, cfg]) => {
+            const btn = createButton(cfg.nombre, state.pais === code, () => {
+                state.pais = code;
+                renderIndicadores(code);
+            });
+            paisContainer.appendChild(btn);
+        });
+    }
+
+    function renderIndicadores(pais) {
+        indContainer.innerHTML = "";
+        const list = PAISES[pais].indicadores;
+        const first = list[0]?.codigo;
+        list.forEach(ind => {
+            const btn = createButton(ind.etiqueta, state.indicador === ind.codigo, () => {
+                state.indicador = ind.codigo;
+                loadData(pais, ind.codigo);
+            });
+            indContainer.appendChild(btn);
+        });
+        if (first) {
+            state.indicador = first;
+            loadData(pais, first);
+            const firstBtn = indContainer.querySelector(".pill-btn-landing");
+            if (firstBtn) firstBtn.classList.add("active");
+        }
+    }
+
+    function setStatus(text, isError = false) {
+        statusEl.textContent = text;
+        statusEl.style.color = isError ? "#b91c1c" : "var(--muted)";
+    }
+
+    function updateChart(labels, data, label) {
+        const ctx = canvas.getContext("2d");
+        if (chart) {
+            chart.data.labels = labels;
+            chart.data.datasets = [{ label, data, fill: true, backgroundColor: "rgba(249, 115, 22, 0.12)", borderColor: "#f97316", tension: 0.3, pointRadius: 3 }];
+            chart.update();
+            return;
+        }
+        chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels,
+                datasets: [{ label, data, fill: true, backgroundColor: "rgba(249, 115, 22, 0.12)", borderColor: "#f97316", tension: 0.3, pointRadius: 3 }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: "#0f172a" } } },
+                scales: {
+                    x: { ticks: { color: "#475569" }, grid: { color: "rgba(226, 232, 240, 0.7)" } },
+                    y: { ticks: { color: "#475569" }, grid: { color: "rgba(226, 232, 240, 0.7)" } },
+                },
+            },
+        });
+    }
+
+    async function loadData(pais, indicador) {
+        setStatus("Cargando datos...");
+        try {
+            const res = await fetch(`/api/indicador/${pais}/${indicador}/`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const payload = await res.json();
+            if (payload.error) throw new Error(payload.error);
+            updateChart(payload.labels, payload.data, payload.descripcion);
+            setStatus(`Mostrando ${payload.descripcion} (ultimos ${payload.labels.length} dias).`);
+        } catch (err) {
+            console.error(err);
+            setStatus(`Error al cargar datos: ${err.message}. Si es clave de API, define EXCHANGE_API_KEY en entorno.`, true);
+        }
+    }
+
+    renderPaisButtons();
+    renderIndicadores(state.pais);
+})();
+</script>
+{% endblock %}
