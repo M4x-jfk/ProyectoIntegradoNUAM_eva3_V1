@@ -1,0 +1,41 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Emisores{% endblock %}
+{% block page_title %}Emisores{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link" href="{% url 'admin_ti_dashboard' %}">Dashboard</a></li>
+    <li><a class="nav-link" href="{% url 'admin_ti_usuarios' %}">Usuarios internos</a></li>
+    <li><a class="nav-link active" href="{% url 'admin_ti_emisores' %}">Emisores</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0;">Emisores</h3>
+        <button class="btn">Nuevo emisor</button>
+    </div>
+    <table class="table" style="margin-top:12px;">
+        <thead>
+            <tr>
+                <th>Nombre</th><th>RUT</th><th>Estado</th><th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emisor in emisores %}
+            <tr>
+                <td>{{ emisor.nombre }}</td>
+                <td class="muted">{{ emisor.rut }}</td>
+                <td><span class="badge orange">{{ emisor.estado }}</span></td>
+                <td>
+                    <a class="btn secondary" href="{% url 'admin_ti_emisor_contadores' emisor.id %}">Contadores</a>
+                    <a class="btn" href="{% url 'admin_ti_emisor_representantes' emisor.id %}">Representantes</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="muted">Sin emisores registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

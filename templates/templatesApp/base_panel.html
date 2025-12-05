@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Panel NUAM{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/nuam_base.css' %}">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>NUAM</h2>
+            <ul class="nav-list">
+                {% block sidebar %}
+                <li><a class="nav-link" href="{% url 'landing_public' %}">Landing</a></li>
+                {% endblock %}
+            </ul>
+        </aside>
+        <main class="content">
+            <div class="topbar">
+                <div>
+                    <p class="muted" style="margin:0;">Mantenedor de Calificaciones Tributarias</p>
+                    <h2 style="margin:4px 0 0;">{% block page_title %}{% endblock %}</h2>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <a class="btn secondary" href="{% url 'logout' %}">Salir</a>
+                </div>
+            </div>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    <script src="{% static 'js/nuam_base.js' %}"></script>
+</body>
+</html>

@@ -1,88 +1,85 @@
-from django.urls import path, include
-from appNuam.views import (
+from django.urls import path
+
+from .views import (
+    AccionistaDashboardView,
+    AdminTiDashboardView,
+    AdminTiEmisorContadoresView,
+    AdminTiEmisorRepresentantesView,
+    AdminTiEmisoresListView,
+    AdminTiUsuariosListView,
+    ContadorCalificacionCreateView,
+    ContadorCalificacionListView,
+    ContadorCalificacionUpdateView,
+    ContadorDashboardView,
+    EmisorArchivoUploadView,
+    EmisorCalificacionesView,
+    InversionistaDashboardView,
+    LandingView,
     LoginView,
     LogoutView,
-    SwitchRoleView,
-    DashboardAdminView,
-    DashboardAnalistaView,
-    DashboardSupervisorView,
-    DashboardAccionistaView,
-    DashboardInversionistaView,
-    PowerBIPlaceholderView,
-    CalificacionListView,
-    CalificacionCreateView,
-    CalificacionUpdateView,
-    CalificacionDeleteView,
-    CalificacionDetailView,
-    CalificacionHistorialView,
-    CalificacionExportView,
-    AprobacionListView,
-    AprobacionUpdateView,
-    UsuarioListView,
-    UsuarioCreateView,
-    UsuarioUpdateView,
-    UsuarioToggleEstadoView,
-    PerfilView,
-    DocumentoListView,
-    DocumentoUploadView,
-    DocumentoDetailView,
-    InformeOficialDownloadView,
-    AuditoriaGlobalListView,
-    BackupEstadoView,
-    ParametrosSistemaView,
-    LogsBackupsView,
-    CargaMasivaPlaceholderView,
-    IAPipelinePlaceholderView,
+    RegistroExternoView,
+    SupervisorCalificacionListView,
+    SupervisorDashboardView,
+    indicador_timeseries_api,
+    landing_indicadores_view,
 )
 
 urlpatterns = [
-    # Login & Logout
-    path('', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('seguridad/rol/', SwitchRoleView.as_view(), name='switch_role'),
+    # Públicas
+    path("", LandingView.as_view(), name="landing_public"),
+    path("login/", LoginView.as_view(), name="login"),
+    path("accounts/login/", LoginView.as_view(), name="accounts_login"),
+    path("registro/", RegistroExternoView.as_view(), name="registro_externo"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("indicadores/", landing_indicadores_view, name="landing_indicadores"),
 
-    # Dashboards por Rol
-    path('dashboard/admin/', DashboardAdminView.as_view(), name='dashboard_admin'),
-    path('dashboard/analista/', DashboardAnalistaView.as_view(), name='dashboard_analista'),
-    path('dashboard/supervisor/', DashboardSupervisorView.as_view(), name='dashboard_supervisor'),
-    path('dashboard/accionista/', DashboardAccionistaView.as_view(), name='dashboard_accionista'),
-    path('dashboard/inversionista/', DashboardInversionistaView.as_view(), name='dashboard_inversionista'),
-    path('dashboard/powerbi/', PowerBIPlaceholderView.as_view(), name='dashboard_powerbi'),
+    # API indicadores económicos
+    path(
+        "api/indicador/<str:pais>/<str:codigo>/",
+        indicador_timeseries_api,
+        name="indicador_timeseries_api",
+    ),
 
-    # Calificaciones
-    path('calificaciones/', CalificacionListView.as_view(), name='calificaciones_list'),
-    path('calificaciones/nueva/', CalificacionCreateView.as_view(), name='calificaciones_create'),
-    path('calificaciones/<int:pk>/editar/', CalificacionUpdateView.as_view(), name='calificaciones_update'),
-    path('calificaciones/<int:pk>/eliminar/', CalificacionDeleteView.as_view(), name='calificaciones_delete'),
-    path('calificaciones/<int:pk>/', CalificacionDetailView.as_view(), name='calificaciones_detail'),
-    path('calificaciones/<int:pk>/historial/', CalificacionHistorialView.as_view(), name='calificaciones_historial'),
-    path('calificaciones/exportar/', CalificacionExportView.as_view(), name='calificaciones_export'),
-    path('calificaciones/aprobaciones/', AprobacionListView.as_view(), name='aprobaciones_list'),
-    path('calificaciones/aprobaciones/<int:pk>/', AprobacionUpdateView.as_view(), name='aprobaciones_update'),
+    # ADMIN_TI
+    path("admin-ti/dashboard/", AdminTiDashboardView.as_view(), name="admin_ti_dashboard"),
+    path("admin-ti/usuarios/", AdminTiUsuariosListView.as_view(), name="admin_ti_usuarios"),
+    path("admin-ti/emisores/", AdminTiEmisoresListView.as_view(), name="admin_ti_emisores"),
+    path(
+        "admin-ti/emisores/<int:id_emisor>/contadores/",
+        AdminTiEmisorContadoresView.as_view(),
+        name="admin_ti_emisor_contadores",
+    ),
+    path(
+        "admin-ti/emisores/<int:id_emisor>/representantes/",
+        AdminTiEmisorRepresentantesView.as_view(),
+        name="admin_ti_emisor_representantes",
+    ),
 
-    # Usuarios
-    path('usuarios/', UsuarioListView.as_view(), name='usuarios_list'),
-    path('usuarios/nuevo/', UsuarioCreateView.as_view(), name='usuarios_create'),
-    path('usuarios/<int:pk>/editar/', UsuarioUpdateView.as_view(), name='usuarios_update'),
-    path('usuarios/<int:pk>/estado/', UsuarioToggleEstadoView.as_view(), name='usuarios_toggle_estado'),
-    path('perfil/', PerfilView.as_view(), name='perfil'),
+    # CONTADOR / ANALISTA
+    path("contador/dashboard/", ContadorDashboardView.as_view(), name="contador_dashboard"),
+    path("contador/calificaciones/", ContadorCalificacionListView.as_view(), name="contador_calificaciones"),
+    path("contador/calificaciones/nueva/", ContadorCalificacionCreateView.as_view(), name="contador_calificacion_create"),
+    path(
+        "contador/calificaciones/<int:pk>/editar/",
+        ContadorCalificacionUpdateView.as_view(),
+        name="contador_calificacion_update",
+    ),
 
-    # Documentos
-    path('documentos/', DocumentoListView.as_view(), name='documentos_list'),
-    path('documentos/subir/', DocumentoUploadView.as_view(), name='documentos_upload'),
-    path('documentos/<int:pk>/', DocumentoDetailView.as_view(), name='documentos_detail'),
-    path('documentos/informes/<int:pk>/descargar/', InformeOficialDownloadView.as_view(), name='informe_descargar'),
+    # SUPERVISOR
+    path("supervisor/dashboard/", SupervisorDashboardView.as_view(), name="supervisor_dashboard"),
+    path("supervisor/calificaciones/", SupervisorCalificacionListView.as_view(), name="supervisor_calificaciones"),
 
-    # Auditoria / Configuracion
-    path('auditoria/', AuditoriaGlobalListView.as_view(), name='auditoria'),
-    path('backups/', BackupEstadoView.as_view(), name='backups_estado'),
-    path('configuracion/parametros/', ParametrosSistemaView.as_view(), name='parametros_sistema'),
-    path('configuracion/logs-backups/', LogsBackupsView.as_view(), name='logs_backups'),
-
-    # Future placeholders
-    path('future/carga-masiva/', CargaMasivaPlaceholderView.as_view(), name='carga_masiva_placeholder'),
-    path('future/ia-etl/', IAPipelinePlaceholderView.as_view(), name='ia_etl_placeholder'),
-
-    # IA module (placeholders)
-    path('', include('appNuam.urls_ia')),
+    # ACCIONISTA / INVERSIONISTA
+    path("accionista/dashboard/", AccionistaDashboardView.as_view(), name="accionista_dashboard"),
+    path("inversionista/dashboard/", InversionistaDashboardView.as_view(), name="inversionista_dashboard"),
+    path(
+        "emisor/<int:id_emisor>/calificaciones/",
+        EmisorCalificacionesView.as_view(),
+        name="emisor_calificaciones",
+    ),
+    path(
+        "emisor/<int:id_emisor>/archivos/subir/",
+        EmisorArchivoUploadView.as_view(),
+        name="emisor_archivo_upload",
+    ),
 ]

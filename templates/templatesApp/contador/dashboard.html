@@ -1,0 +1,33 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Dashboard Contador{% endblock %}
+{% block page_title %}Dashboard Contador/Analista{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link" href="{% url 'landing_public' %}">Landing</a></li>
+    <li><a class="nav-link active" href="{% url 'contador_dashboard' %}">Dashboard</a></li>
+    <li><a class="nav-link" href="{% url 'contador_calificaciones' %}">Calificaciones</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>Calificaciones pendientes</h3>
+    <table class="table">
+        <thead>
+            <tr><th>Emisor</th><th>Año</th><th>Estado proceso</th><th>Estado registro</th></tr>
+        </thead>
+        <tbody>
+            {% for c in calificaciones_pendientes %}
+            <tr>
+                <td>{{ c.emisor }}</td>
+                <td>{{ c.anio }}</td>
+                <td><span class="badge">{{ c.estado_proceso }}</span></td>
+                <td><span class="badge orange">{{ c.estado_registro }}</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="muted">No hay calificaciones pendientes.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

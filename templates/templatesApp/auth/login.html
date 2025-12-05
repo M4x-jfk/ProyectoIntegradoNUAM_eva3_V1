@@ -1,0 +1,21 @@
+{% extends "templatesApp/base_public.html" %}
+
+{% block title %}Login · NUAM{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:center;">
+    <div class="card" style="max-width:520px; width:100%;">
+        <h3 style="margin:0 0 12px; text-align:center;">Accesos rápidos por rol</h3>
+        <p class="muted" style="margin:0 0 12px; text-align:center;">Selecciona tu rol para ir al panel correspondiente.</p>
+        <div style="display:grid; gap:10px;">
+            <a class="btn" href="{% url 'admin_ti_dashboard' %}">Administrador TI</a>
+            <a class="btn secondary" href="{% url 'supervisor_dashboard' %}">Supervisor</a>
+            <a class="btn secondary" href="{% url 'contador_dashboard' %}">Contador / Analista</a>
+            <a class="btn secondary" href="{% url 'accionista_dashboard' %}">Accionista</a>
+            <a class="btn secondary" href="{% url 'inversionista_dashboard' %}">Inversionista</a>
+        </div>
+        <p class="muted" style="margin-top:12px; text-align:center;">¿Sin cuenta externa? <a href="{% url 'registro_externo' %}">Crear cuenta Accionista/Inversionista</a></p>
+        <!-- Credenciales de prueba: admin_ti / Admin123! | supervisor1 / Supervisor123! | analista1 / Analista123! | accionista1 / Accionista123! | inversionista1 / Inversionista123! -->
+    </div>
+</div>
+{% endblock %}

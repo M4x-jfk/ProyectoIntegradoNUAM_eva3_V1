@@ -1,0 +1,22 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Subir archivo{% endblock %}
+{% block page_title %}Subir archivo para emisor{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link" href="{% url 'accionista_dashboard' %}">Accionista</a></li>
+    <li><a class="nav-link" href="{% url 'inversionista_dashboard' %}">Inversionista</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:520px;">
+    <h3 style="margin:0 0 10px;">Subir PDF asociado al emisor</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Archivo PDF</label>
+        <input type="file" name="archivo">
+        <button class="btn" type="submit">Subir</button>
+    </form>
+    <p class="muted" style="margin-top:8px;">Solo usuarios vinculados al emisor pueden subir documentos.</p>
+</div>
+{% endblock %}

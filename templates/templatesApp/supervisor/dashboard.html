@@ -1,0 +1,16 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Dashboard Supervisor{% endblock %}
+{% block page_title %}Dashboard Supervisor{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link active" href="{% url 'supervisor_dashboard' %}">Dashboard</a></li>
+    <li><a class="nav-link" href="{% url 'supervisor_calificaciones' %}">Calificaciones</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>Supervisión</h3>
+    <p class="muted">Cambiar estado_proceso, revisar rechazos y anulaciones.</p>
+</div>
+{% endblock %}
