@@ -5,7 +5,7 @@ import os
 
 import requests
 from requests import exceptions as req_exceptions
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login as auth_login
 from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
@@ -296,6 +296,13 @@ class LoginView(TemplateView):
                 estado,
             )
             return self.render_to_response(ctx)
+
+        # Autenticar sesión Django con backend custom
+        try:
+            user.backend = "appNuam.auth_backends.SHA256Backend"
+            auth_login(request, user)
+        except Exception as exc:
+            logger.warning("ADMIN_ALERT no se pudo iniciar sesión en Django auth: %s", exc)
 
         target = _redirect_by_role(user)
         logger.info(

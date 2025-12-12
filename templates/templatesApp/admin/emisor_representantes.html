@@ -4,20 +4,23 @@
 {% block page_title %}Representantes · {{ emisor.nombre }}{% endblock %}
 
 {% block sidebar %}
-    <li><a class="nav-link" href="{% url 'admin_ti_dashboard' %}">Dashboard</a></li>
-    <li><a class="nav-link" href="{% url 'admin_ti_emisores' %}">Emisores</a></li>
+<li><a class="nav-link" href="{% url 'admin_ti_dashboard' %}">Dashboard</a></li>
+<li><a class="nav-link" href="{% url 'admin_ti_emisores' %}">Emisores</a></li>
 {% endblock %}
 
 {% block content %}
 <div class="card">
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <h3 style="margin:0;">Representantes vinculados</h3>
-        <button class="btn">Agregar representante</button>
+        <a class="btn" href="{% url 'admin_ti_emisor_representante_create' emisor.id %}">Agregar representante</a>
     </div>
     <table class="table" style="margin-top:12px;">
         <thead>
             <tr>
-                <th>Usuario</th><th>Rol emisor</th><th>Fecha asignación</th>
+                <th>Usuario</th>
+                <th>Rol emisor</th>
+                <th>Fecha asignación</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -26,9 +29,15 @@
                 <td>{{ rep.usuario.username }}</td>
                 <td class="muted">{{ rep.rol_emisor }}</td>
                 <td class="muted">{{ rep.fecha_asignacion }}</td>
+                <td>
+                    <a href="{% url 'admin_ti_emisor_representante_delete' rep.id %}"
+                        style="color:var(--text-danger);">Eliminar</a>
+                </td>
             </tr>
             {% empty %}
-            <tr><td colspan="3" class="muted">Sin representantes asignados.</td></tr>
+            <tr>
+                <td colspan="4" class="muted">Sin representantes asignados.</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

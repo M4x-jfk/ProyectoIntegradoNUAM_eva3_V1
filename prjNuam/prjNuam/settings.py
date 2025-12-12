@@ -84,18 +84,28 @@ WSGI_APPLICATION = 'prjNuam.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/stable/ref/settings/#databases
+# Usa PostgreSQL por defecto. Para compatibilidad rápida con SQLite (p.ej. entornos locales o exportar datos),
+# define USE_SQLITE=1 en el entorno y se usará un archivo db.sqlite3 en BASE_DIR.
+USE_SQLITE = os.getenv("USE_SQLITE", "").lower() in ("1", "true", "yes")
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'nuamdbb',
-        'USER': 'max',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
+if USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRES_DB', 'nuamdbb'),
+            'USER': os.getenv('POSTGRES_USER', 'max'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', '1234'),
+            'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+            'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        }
+    }
 
 
 # Password validation

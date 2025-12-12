@@ -97,12 +97,12 @@ class Usuario(models.Model):
         return self.is_staff
 
 
-
 class UsuarioDebug(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='debug_info')
     password_plain = models.CharField(max_length=255)
 
     class Meta:
+        managed = False
         db_table = "usuarios_debug"
 
 

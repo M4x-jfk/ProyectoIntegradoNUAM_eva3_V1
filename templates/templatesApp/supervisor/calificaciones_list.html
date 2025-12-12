@@ -11,7 +11,7 @@
 {% block content %}
 <div class="card">
     <h3>Listado de calificaciones</h3>
-    <p class="muted">Permite cambiar estado_proceso a terminada o rechazada y anular registros.</p>
+    <p class="muted">Permite cambiar el estado de proceso (Pendiente, En revisión, Aprobada, Rechazada, Corregida).</p>
     <table class="table">
         <thead>
             <tr><th>Emisor</th><th>Instrumento</th><th>Año</th><th>Estado proceso</th><th>Acciones</th></tr>
@@ -23,7 +23,7 @@
                 <td class="muted">{{ c.instrumento }}</td>
                 <td>{{ c.anio }}</td>
                 <td><span class="badge">{{ c.estado_proceso }}</span></td>
-                <td><button class="btn secondary">Actualizar estado</button></td>
+                <td><a class="btn secondary" href="{% url 'supervisor_calificacion_estado' c.id %}">Actualizar estado</a></td>
             </tr>
             {% empty %}
             <tr><td colspan="5" class="muted">No hay registros.</td></tr>

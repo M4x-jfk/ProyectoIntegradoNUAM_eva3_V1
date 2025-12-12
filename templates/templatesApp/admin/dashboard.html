@@ -14,5 +14,11 @@
 <div class="card">
     <h3>Resumen rápido</h3>
     <p class="muted">Panel para alta de usuarios, emisores, contadores y representantes.</p>
+    <ul class="muted">
+        <li>Usuarios: {{ total_usuarios }}</li>
+        <li>Emisores: {{ total_emisores }}</li>
+        <li>Calificaciones totales: {{ total_calificaciones }}</li>
+        <li>Pendientes: {{ calif_pendientes }} · En revisión: {{ calif_en_revision }} · Aprobadas: {{ calif_aprobadas }} · Rechazadas: {{ calif_rechazadas }}</li>
+    </ul>
 </div>
 {% endblock %}

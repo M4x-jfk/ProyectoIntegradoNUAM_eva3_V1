@@ -12,6 +12,7 @@
 {% block content %}
 <div class="card">
     <h3>Calificaciones pendientes</h3>
+    <p class="muted">Emisores asignados: {{ total_mis_emisores }} · Pendientes: {{ mis_calif_pendientes }} · En revisión: {{ mis_calif_en_revision }} · Aprobadas: {{ mis_calif_aprobadas }} · Rechazadas: {{ mis_calif_rechazadas }}</p>
     <table class="table">
         <thead>
             <tr><th>Emisor</th><th>Año</th><th>Estado proceso</th><th>Estado registro</th></tr>

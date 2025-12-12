@@ -1,0 +1,38 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Actualizar estado{% endblock %}
+{% block page_title %}Actualizar estado de calificación{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link" href="{% url 'supervisor_dashboard' %}">Dashboard</a></li>
+    <li><a class="nav-link active" href="{% url 'supervisor_calificaciones' %}">Calificaciones</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:720px;">
+    <h3 style="margin:0 0 12px;">Estado de la calificación</h3>
+    <p class="muted">Cambie el estado de proceso; si marca Rechazada, indique un motivo.</p>
+    <div class="muted" style="margin-bottom:12px;">
+        <strong>Emisor:</strong> {{ object.emisor }} · <strong>Instrumento:</strong> {{ object.instrumento }} · <strong>Año:</strong> {{ object.anio }} · <strong>Estado actual:</strong> {{ object.estado_proceso }}
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <label>Estado de proceso</label>
+        {{ form.estado_proceso }}
+        {% if form.estado_proceso.help_text %}<small class="muted">{{ form.estado_proceso.help_text }}</small>{% endif %}
+        {{ form.estado_proceso.errors }}
+
+        <label>Motivo de rechazo (si aplica)</label>
+        {{ form.motivo_rechazo }}
+        {% if form.motivo_rechazo.help_text %}<small class="muted">{{ form.motivo_rechazo.help_text }}</small>{% endif %}
+        {{ form.motivo_rechazo.errors }}
+
+        <div style="margin-top:12px;">
+            <button type="submit" class="btn">Guardar</button>
+            <a class="btn secondary" href="{% url 'supervisor_calificaciones' %}">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

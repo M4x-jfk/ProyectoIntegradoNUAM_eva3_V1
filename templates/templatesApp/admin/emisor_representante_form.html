@@ -1,0 +1,23 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Agregar representante{% endblock %}
+{% block page_title %}Agregar representante a {{ emisor.nombre }}{% endblock %}
+
+{% block sidebar %}
+<li><a class="nav-link" href="{% url 'admin_ti_dashboard' %}">Dashboard</a></li>
+<li><a class="nav-link" href="{% url 'admin_ti_emisores' %}">Emisores</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:600px;">
+    <h3 style="margin:0 0 12px;">Vincular usuario</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div style="margin-top:20px;">
+            <button class="btn" type="submit">Guardar</button>
+            <a class="btn secondary" href="{% url 'admin_ti_emisor_representantes' emisor.id %}">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

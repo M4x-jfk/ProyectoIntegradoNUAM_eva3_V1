@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">{% if form.instance.pk %}Editar{% else %}Crear{% endif %} Usuario</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">Usuario</label>
+                                <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" 
+                                       class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                                       value="{{ form.username.value|default:'' }}" required>
+                                <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                                <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" 
+                                       class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                                       value="{{ form.email.value|default:'' }}" required>
+                                <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
+                                <input type="text" name="{{ form.nombre.name }}" id="{{ form.nombre.id_for_label }}" 
+                                       class="form-control {% if form.nombre.errors %}is-invalid{% endif %}"
+                                       value="{{ form.nombre.value|default:'' }}">
+                                <div class="invalid-feedback">{{ form.nombre.errors.0 }}</div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.apellido.id_for_label }}" class="form-label">Apellido</label>
+                                <input type="text" name="{{ form.apellido.name }}" id="{{ form.apellido.id_for_label }}" 
+                                       class="form-control {% if form.apellido.errors %}is-invalid{% endif %}"
+                                       value="{{ form.apellido.value|default:'' }}">
+                                <div class="invalid-feedback">{{ form.apellido.errors.0 }}</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.password.id_for_label }}" class="form-label">Contraseña</label>
+                                <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" 
+                                       class="form-control {% if form.password.errors %}is-invalid{% endif %}">
+                                <div class="form-text">{% if form.instance.pk %}Dejar en blanco para mantener la actual.{% endif %}</div>
+                                <div class="invalid-feedback">{{ form.password.errors.0 }}</div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.rol.id_for_label }}" class="form-label">Rol</label>
+                                <select name="{{ form.rol.name }}" id="{{ form.rol.id_for_label }}" class="form-select">
+                                    <option value="">Seleccione un rol</option>
+                                    {% for rol in form.rol.field.queryset %}
+                                    <option value="{{ rol.pk }}" {% if form.rol.value == rol.pk %}selected{% endif %}>
+                                        {{ rol.nombre }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.estado.id_for_label }}" class="form-label">Estado</label>
+                            <select name="{{ form.estado.name }}" id="{{ form.estado.id_for_label }}" class="form-select">
+                                <option value="activo" {% if form.estado.value == 'activo' %}selected{% endif %}>Activo</option>
+                                <option value="inactivo" {% if form.estado.value == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                                <option value="bloqueado" {% if form.estado.value == 'bloqueado' %}selected{% endif %}>Bloqueado</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'admin_ti_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
