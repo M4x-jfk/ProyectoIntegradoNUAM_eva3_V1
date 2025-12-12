@@ -1,38 +1,96 @@
 {% extends "templatesApp/base_panel.html" %}
 
 {% block title %}Dashboard Inversionista{% endblock %}
-{% block page_title %}Dashboard Inversionista{% endblock %}
+{% block page_title %}Centro de Inversiones{% endblock %}
 
 {% block sidebar %}
-    <li><a class="nav-link active" href="{% url 'inversionista_dashboard' %}">Dashboard</a></li>
+<li><a class="nav-link active" href="{% url 'inversionista_dashboard' %}">Dashboard</a></li>
+<li><a class="nav-link" href="#">Reportes</a></li>
+<li><a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a></li>
 {% endblock %}
 
 {% block content %}
-<div class="card">
-    <h3>Emisores asociados</h3>
-    <ul class="nav-list">
-        {% for em in emisores %}
-        <li><a class="nav-link" href="{% url 'emisor_calificaciones' em.id %}">{{ em.nombre }}</a></li>
-        {% empty %}
-        <li class="nav-link muted">Sin emisores asignados.</li>
-        {% endfor %}
-    </ul>
-</div>
-<div class="card">
-    <h3>Calificaciones recientes</h3>
-    <table class="table">
-        <thead><tr><th>Emisor</th><th>Año</th><th>Estado</th></tr></thead>
-        <tbody>
-            {% for c in calificaciones %}
-            <tr>
-                <td>{{ c.emisor }}</td>
-                <td>{{ c.anio }}</td>
-                <td><span class="badge">{{ c.estado_proceso }}</span></td>
-            </tr>
+<div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card">
+        <h3>KPIs de Mercado</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:15px;">
+            <div style="background:#f0f8ff; padding:15px; border-radius:8px; text-align:center;">
+                <h4 style="margin:0;">IPSA</h4>
+                <p style="font-size:24px; font-weight:bold; margin:5px 0;">5.840</p>
+                <span style="color:green;">+1.2%</span>
+            </div>
+            <div style="background:#f0f8ff; padding:15px; border-radius:8px; text-align:center;">
+                <h4 style="margin:0;">UF</h4>
+                <p style="font-size:24px; font-weight:bold; margin:5px 0;">36.500</p>
+                <span style="color:orange;">+0.1%</span>
+            </div>
+            <div style="background:#f0f8ff; padding:15px; border-radius:8px; text-align:center;">
+                <h4 style="margin:0;">Dólar</h4>
+                <p style="font-size:24px; font-weight:bold; margin:5px 0;">950</p>
+                <span style="color:red;">-0.5%</span>
+            </div>
+            <div style="background:#f0f8ff; padding:15px; border-radius:8px; text-align:center;">
+                <h4 style="margin:0;">NUAM Index</h4>
+                <p style="font-size:24px; font-weight:bold; margin:5px 0;">1.205</p>
+                <span style="color:green;">+2.5%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Reportes Estratégicos</h3>
+        <ul style="list-style:none; padding:0; margin-top:15px;">
+            {% for rep in reportes %}
+            <li
+                style="padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <strong>{{ rep.tipo_documento|title }}</strong><br>
+                    <small class="muted">{{ rep.fecha_creacion|date:"d/M/Y" }}</small>
+                </div>
+                {% if rep.ruta_archivo %}
+                <a href="{{ MEDIA_URL }}{{ rep.ruta_archivo }}" target="_blank" style="color:var(--primary-color);">
+                    Descargar PDF
+                </a>
+                {% else %}
+                <span class="muted">No disponible</span>
+                {% endif %}
+            </li>
             {% empty %}
-            <tr><td colspan="3" class="muted">No hay registros.</td></tr>
+            <li class="muted">No hay reportes disponibles.</li>
+            {% endfor %}
+        </ul>
+        <button class="btn" style="margin-top:10px;">Ver todos los reportes</button>
+    </div>
+</div>
+
+<div class="card" style="margin-top:20px;">
+    <h3>Emisores en Seguimiento</h3>
+    {% if emisores %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Emisor</th>
+                <th>RUT</th>
+                <th>Tipo</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emis in emisores %}
+            <tr>
+                <td>{{ emis.nombre }}</td>
+                <td>{{ emis.rut }}</td>
+                <td>{{ emis.tipo_emisor|default:"Empresa" }}</td>
+                <td>
+                    <a href="{% url 'reporte_calificaciones_pdf' emis.id %}" class="btn small" target="_blank">Descargar
+                        PDF</a>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p class="muted">No tienes emisores en seguimiento.</p>
+    {% endif %}
 </div>
 {% endblock %}

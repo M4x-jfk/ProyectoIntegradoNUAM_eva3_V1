@@ -1,0 +1,54 @@
+{% extends "templatesApp/base_panel.html" %}
+
+{% block title %}Nuevo emisor{% endblock %}
+{% block page_title %}Nuevo emisor{% endblock %}
+
+{% block sidebar %}
+    <li><a class="nav-link" href="{% url 'admin_ti_dashboard' %}">Dashboard</a></li>
+    <li><a class="nav-link" href="{% url 'admin_ti_usuarios' %}">Usuarios internos</a></li>
+    <li><a class="nav-link active" href="{% url 'admin_ti_emisores' %}">Emisores</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3 style="margin-top:0;">Crear nuevo emisor</h3>
+    <form method="post" style="margin-top:16px;">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-grid">
+            <p>
+                {{ form.nombre.label_tag }}<br>
+                {{ form.nombre }}{{ form.nombre.errors }}
+            </p>
+            <p>
+                {{ form.rut.label_tag }}<br>
+                {{ form.rut }}{{ form.rut.errors }}
+            </p>
+            <p>
+                {{ form.tipo_emisor.label_tag }}<br>
+                {{ form.tipo_emisor }}{{ form.tipo_emisor.errors }}
+            </p>
+            <p>
+                {{ form.estado.label_tag }}<br>
+                {{ form.estado }}{{ form.estado.errors }}
+            </p>
+            <p>
+                <label for="{{ form.contadores.id_for_label }}">Seleccionar contadores</label><br>
+                {{ form.contadores }}<br>
+                <small class="muted">Puede elegir uno o más contadores. Obligatorio.</small>
+                {{ form.contadores.errors }}
+            </p>
+            <p>
+                {{ form.rol_relacion.label_tag }}<br>
+                {{ form.rol_relacion }}<br>
+                <small class="muted">Rol que se asignará a todos los contadores seleccionados.</small>
+                {{ form.rol_relacion.errors }}
+            </p>
+        </div>
+        <div style="margin-top:16px; display:flex; gap:8px;">
+            <a class="btn secondary" href="{% url 'admin_ti_emisores' %}">Cancelar</a>
+            <button type="submit" class="btn">Guardar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

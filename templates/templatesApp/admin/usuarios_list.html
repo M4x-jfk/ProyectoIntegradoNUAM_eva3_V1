@@ -1,34 +1,60 @@
-{% extends "templatesApp/base_panel.html" %}
-
-{% block title %}Usuarios internos{% endblock %}
-{% block page_title %}Usuarios internos{% endblock %}
-
-{% block sidebar %}
-    <li><a class="nav-link" href="{% url 'admin_ti_dashboard' %}">Dashboard</a></li>
-    <li><a class="nav-link active" href="{% url 'admin_ti_usuarios' %}">Usuarios internos</a></li>
-    <li><a class="nav-link" href="{% url 'admin_ti_emisores' %}">Emisores</a></li>
-{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="margin:0;">Usuarios internos</h3>
-        <button class="btn">Crear usuario</button>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestión de Usuarios</h2>
+        <a href="{% url 'admin_ti_user_create' %}" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i> Crear Usuario
+        </a>
     </div>
-    <table class="table" style="margin-top:12px;">
-        <thead>
-            <tr>
-                <th>Usuario</th><th>Correo</th><th>Roles</th><th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="muted">Ejemplo</td>
-                <td class="muted">usuario@nuam.cl</td>
-                <td><span class="badge">ADMIN_TI</span></td>
-                <td><span class="badge orange">activo</span></td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Nombre Completo</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Fecha Creación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td>{{ usuario.username }}</td>
+                            <td>{{ usuario.full_name }}</td>
+                            <td>{{ usuario.email }}</td>
+                            <td>
+                                <span class="badge {% if usuario.estado == 'activo' %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ usuario.estado|title }}
+                                </span>
+                            </td>
+                            <td>{{ usuario.fecha_creacion|date:"d/m/Y" }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'admin_ti_user_update' usuario.pk %}" class="btn btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'admin_ti_user_delete' usuario.pk %}" class="btn btn-outline-danger" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">No hay usuarios registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

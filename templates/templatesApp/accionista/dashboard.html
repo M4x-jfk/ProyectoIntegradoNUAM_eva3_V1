@@ -1,38 +1,67 @@
 {% extends "templatesApp/base_panel.html" %}
 
 {% block title %}Dashboard Accionista{% endblock %}
-{% block page_title %}Dashboard Accionista{% endblock %}
+{% block page_title %}Mi Portafolio (Accionista){% endblock %}
 
 {% block sidebar %}
-    <li><a class="nav-link active" href="{% url 'accionista_dashboard' %}">Dashboard</a></li>
+<li><a class="nav-link active" href="{% url 'accionista_dashboard' %}">Dashboard</a></li>
+<li><a class="nav-link" href="#">Mi Perfil</a></li>
+<li><a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a></li>
 {% endblock %}
 
 {% block content %}
-<div class="card">
-    <h3>Emisores asociados</h3>
-    <ul class="nav-list">
-        {% for em in emisores %}
-        <li><a class="nav-link" href="{% url 'emisor_calificaciones' em.id %}">{{ em.nombre }}</a></li>
-        {% empty %}
-        <li class="nav-link muted">Sin emisores asignados.</li>
-        {% endfor %}
-    </ul>
-</div>
-<div class="card">
-    <h3>Calificaciones recientes</h3>
-    <table class="table">
-        <thead><tr><th>Emisor</th><th>Año</th><th>Estado</th></tr></thead>
-        <tbody>
-            {% for c in calificaciones %}
-            <tr>
-                <td>{{ c.emisor }}</td>
-                <td>{{ c.anio }}</td>
-                <td><span class="badge">{{ c.estado_proceso }}</span></td>
-            </tr>
+<div class="dashboard-grid">
+    <div class="card">
+        <h3>Mis Emisores</h3>
+        <p class="muted">Empresas en las que poseo participación.</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Emisor</th>
+                    <th>RUT</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emisor in emisores %}
+                <tr>
+                    <td>{{ emisor.nombre }}</td>
+                    <td>{{ emisor.rut }}</td>
+                    <td><span class="badge green">{{ emisor.estado }}</span></td>
+                    <td>
+                        <a class="btn secondary small" href="{% url 'emisor_calificaciones' emisor.id %}">Ver
+                            calificaciones</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="muted">No tienes emisores asociados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>Calificaciones Recientes</h3>
+        <p class="muted">Últimas actualizaciones tributarias.</p>
+        <ul style="list-style:none; padding:0;">
+            {% for calif in calificaciones %}
+            <li style="padding:10px 0; border-bottom:1px solid #eee;">
+                <strong>{{ calif.instrumento.nombre }}</strong> ({{ calif.anio }})<br>
+                <span class="muted">{{ calif.emisor.nombre }}</span> -
+                <span style="color:var(--primary-color);">Factor: {{ calif.factor|default:"Pendiente" }}</span>
+                <br>
+                <small>Rating: {{ calif.rating|default:"-" }}</small>
+            </li>
             {% empty %}
-            <tr><td colspan="3" class="muted">No hay registros.</td></tr>
+            <li class="muted">Sin calificaciones disponibles.</li>
             {% endfor %}
-        </tbody>
-    </table>
+        </ul>
+        <div style="margin-top:15px;">
+            <button class="btn">Ver certificados tributarios</button>
+        </div>
+    </div>
 </div>
 {% endblock %}

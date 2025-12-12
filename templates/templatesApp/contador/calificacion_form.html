@@ -16,30 +16,48 @@
         {{ form.non_field_errors }}
         <label>Emisor</label>
         {{ form.emisor }}
+        {% if form.emisor.help_text %}<small class="muted">{{ form.emisor.help_text }}</small>{% endif %}
+        {{ form.emisor.errors }}
 
         <label>Instrumento</label>
         {{ form.instrumento }}
+        {% if form.instrumento.help_text %}<small class="muted">{{ form.instrumento.help_text }}</small>{% endif %}
+        {{ form.instrumento.errors }}
 
         <label>Año</label>
         {{ form.anio }}
+        {% if form.anio.help_text %}<small class="muted">{{ form.anio.help_text }}</small>{% endif %}
+        {{ form.anio.errors }}
 
         <label>Monto</label>
         {{ form.monto }}
+        {% if form.monto.help_text %}<small class="muted">{{ form.monto.help_text }}</small>{% endif %}
+        {{ form.monto.errors }}
 
         <label>Factor</label>
         {{ form.factor }}
+        {% if form.factor.help_text %}<small class="muted">{{ form.factor.help_text }}</small>{% endif %}
+        {{ form.factor.errors }}
 
         <label>Rating</label>
         {{ form.rating }}
+        {% if form.rating.help_text %}<small class="muted">{{ form.rating.help_text }}</small>{% endif %}
+        {{ form.rating.errors }}
 
         <label>Estado de proceso</label>
         {{ form.estado_proceso }}
+        {% if form.estado_proceso.help_text %}<small class="muted">{{ form.estado_proceso.help_text }}</small>{% endif %}
+        {{ form.estado_proceso.errors }}
 
         <label>Motivo de rechazo (si aplica)</label>
         {{ form.motivo_rechazo }}
+        {% if form.motivo_rechazo.help_text %}<small class="muted">{{ form.motivo_rechazo.help_text }}</small>{% endif %}
+        {{ form.motivo_rechazo.errors }}
 
         <label>Contador responsable</label>
         {{ form.contador_responsable }}
+        {% if form.contador_responsable.help_text %}<small class="muted">{{ form.contador_responsable.help_text }}</small>{% endif %}
+        {{ form.contador_responsable.errors }}
 
         <button class="btn" type="submit">Guardar</button>
     </form>

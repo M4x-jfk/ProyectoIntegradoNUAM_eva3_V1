@@ -1,32 +1,103 @@
-{% extends "templatesApp/base_public.html" %}
+{% extends "templatesApp/base_panel.html" %}
 
-{% block title %}Registro externo · NUAM{% endblock %}
+{% block title %}Registro{% endblock %}
+{% block page_title %}Crear cuenta de Inversionista / Accionista NUAM{% endblock %}
+
+{% block sidebar %}
+<li><a class="nav-link" href="{% url 'landing_public' %}">Inicio</a></li>
+<li><a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a></li>
+{% endblock %}
 
 {% block content %}
-<div class="card" style="max-width:540px;">
-    <h3 style="margin:0 0 12px;">Crear cuenta (Accionista / Inversionista)</h3>
-    <p class="muted" style="margin:0 0 12px;">Solo se permiten roles externos. Las cuentas internas se gestionan por ADMIN_TI.</p>
+<div class="card" style="max-width:600px; margin: 0 auto;">
+    <h3 style="margin:0 0 20px; text-align:center;">Formulario de Registro</h3>
     <form method="post">
         {% csrf_token %}
-        <label>Nombre</label>
-        <input type="text" name="nombre" placeholder="Nombre">
 
-        <label>Apellido</label>
-        <input type="text" name="apellido" placeholder="Apellido">
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
 
-        <label>Email</label>
-        <input type="email" name="email" placeholder="usuario@dominio.com">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+            <p>
+                <label>{{ form.nombre.label }}</label>
+                {{ form.nombre }}
+                {{ form.nombre.errors }}
+            </p>
+            <p>
+                <label>{{ form.apellido.label }}</label>
+                {{ form.apellido }}
+                {{ form.apellido.errors }}
+            </p>
+        </div>
 
-        <label>Rol</label>
-        <select name="rol">
-            <option value="ACCIONISTA">Accionista</option>
-            <option value="INVERSIONISTA">Inversionista</option>
-        </select>
+        <p>
+            <label>{{ form.email.label }}</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+        </p>
 
-        <label>Contraseña</label>
-        <input type="password" name="password" placeholder="••••••">
+        <p>
+            <label>{{ form.username.label }}</label>
+            {{ form.username }}
+            {{ form.username.errors }}
+        </p>
 
-        <button class="btn" type="submit">Crear cuenta</button>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+            <p>
+                <label>{{ form.password.label }}</label>
+                {{ form.password }}
+                {{ form.password.errors }}
+            </p>
+            <p>
+                <label>{{ form.confirm_password.label }}</label>
+                {{ form.confirm_password }}
+                {{ form.confirm_password.errors }}
+            </p>
+        </div>
+
+        <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+            <label style="font-weight:bold; display:block; margin-bottom:10px;">{{ form.tipo_cuenta.label }}</label>
+            <div style="display:flex; gap:20px;">
+                {% for radio in form.tipo_cuenta %}
+                <div class="radio-option">
+                    {{ radio.tag }}
+                    <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                </div>
+                {% endfor %}
+            </div>
+            {{ form.tipo_cuenta.errors }}
+        </div>
+
+        <div id="emisores-field" style="display:none; margin-bottom:20px;">
+            <label>{{ form.emisores.label }}</label>
+            {{ form.emisores }}
+            <small style="display:block; color:#666;">Use Ctrl + Click para seleccionar múltiples.</small>
+            {{ form.emisores.errors }}
+        </div>
+
+        <button class="btn" type="submit" style="width:100%;">Crear cuenta</button>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const radios = document.querySelectorAll('input[name="tipo_cuenta"]');
+        const emisoresField = document.getElementById('emisores-field');
+
+        function toggleEmisores() {
+            let selected = document.querySelector('input[name="tipo_cuenta"]:checked');
+            if (selected && selected.value === 'accionista') {
+                emisoresField.style.display = 'block';
+            } else {
+                emisoresField.style.display = 'none';
+            }
+        }
+
+        radios.forEach(r => r.addEventListener('change', toggleEmisores));
+        toggleEmisores(); // Run on load
+    });
+</script>
 {% endblock %}

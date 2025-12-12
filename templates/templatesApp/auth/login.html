@@ -1,21 +1,89 @@
-{% extends "templatesApp/base_public.html" %}
-
-{% block title %}Login · NUAM{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div style="display:flex; justify-content:center;">
-    <div class="card" style="max-width:520px; width:100%;">
-        <h3 style="margin:0 0 12px; text-align:center;">Accesos rápidos por rol</h3>
-        <p class="muted" style="margin:0 0 12px; text-align:center;">Selecciona tu rol para ir al panel correspondiente.</p>
-        <div style="display:grid; gap:10px;">
-            <a class="btn" href="{% url 'admin_ti_dashboard' %}">Administrador TI</a>
-            <a class="btn secondary" href="{% url 'supervisor_dashboard' %}">Supervisor</a>
-            <a class="btn secondary" href="{% url 'contador_dashboard' %}">Contador / Analista</a>
-            <a class="btn secondary" href="{% url 'accionista_dashboard' %}">Accionista</a>
-            <a class="btn secondary" href="{% url 'inversionista_dashboard' %}">Inversionista</a>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0">Iniciar Sesión</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Usuario</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- User Cheat Sheet -->
+            <div class="card mt-4 shadow-sm border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Credenciales de Prueba</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Contraseña</th>
+                                    <th>Estado</th>
+                                    <th>Rol</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in usuarios_demo %}
+                                <tr>
+                                    <td><code>{{ user.username }}</code></td>
+                                    <td>
+                                        {% if user.demo_password %}
+                                        <code>{{ user.demo_password }}</code>
+                                        {% else %}
+                                        <span class="text-muted">No disponible</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge {% if user.estado == 'activo' %}bg-success{% else %}bg-secondary{% endif %}">
+                                            {{ user.estado }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% for rol in user.roles.all %}
+                                        <span class="badge bg-primary">{{ rol.nombre }}</span>
+                                        {% empty %}
+                                        <span class="text-muted">-</span>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No hay usuarios registrados.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <p class="muted" style="margin-top:12px; text-align:center;">¿Sin cuenta externa? <a href="{% url 'registro_externo' %}">Crear cuenta Accionista/Inversionista</a></p>
-        <!-- Credenciales de prueba: admin_ti / Admin123! | supervisor1 / Supervisor123! | analista1 / Analista123! | accionista1 / Accionista123! | inversionista1 / Inversionista123! -->
     </div>
 </div>
 {% endblock %}

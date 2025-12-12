@@ -12,5 +12,11 @@
 <div class="card">
     <h3>Supervisión</h3>
     <p class="muted">Cambiar estado_proceso, revisar rechazos y anulaciones.</p>
+    <ul class="muted">
+        <li>Calificaciones totales: {{ calif_total }}</li>
+        <li>Pendientes: {{ calif_pendientes }} · En revisión: {{ calif_en_revision }}</li>
+        <li>Aprobadas: {{ calif_aprobadas }} · Rechazadas: {{ calif_rechazadas }}</li>
+    </ul>
+    <a class="btn" href="{% url 'supervisor_calificaciones' %}">Ver calificaciones</a>
 </div>
 {% endblock %}
