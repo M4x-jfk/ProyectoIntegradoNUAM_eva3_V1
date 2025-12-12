@@ -1,7 +1,4 @@
-from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
-
+from .models import Usuario
 
 class SHA256Backend(BaseBackend):
     """
@@ -10,7 +7,8 @@ class SHA256Backend(BaseBackend):
     """
 
     def authenticate(self, request, username=None, password=None, **kwargs):
-        User = get_user_model()
+        # Force usage of appNuam.Usuario
+        User = Usuario
         if username is None or password is None:
             return None
         try:
@@ -29,7 +27,7 @@ class SHA256Backend(BaseBackend):
         return None
 
     def get_user(self, user_id):
-        User = get_user_model()
+        User = Usuario
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:

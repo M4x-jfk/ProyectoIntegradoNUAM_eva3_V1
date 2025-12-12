@@ -12,9 +12,22 @@ ESTADO_REGISTRO_CHOICES = (
 
 ESTADO_PROCESO_CALIF_CHOICES = (
     ("pendiente", "Pendiente"),
-    ("terminada", "Terminada"),
+    ("en_revision", "En revisión"),
+    ("aprobada", "Aprobada"),
     ("rechazada", "Rechazada"),
+    ("corregida", "Corregida"),
 )
+
+# Tipos de instrumentos permitidos
+TIPO_INSTRUMENTO_CHOICES = [
+    ("accion", "Acción"),
+    ("bono", "Bono / Instrumento de deuda"),
+    ("cuota_fondo", "Cuota de Fondo"),
+    ("deposito_plazo", "Depósito a Plazo"),
+    ("pagare", "Pagaré Financiero"),
+    ("instrumento_deuda", "Instrumento de Deuda"),
+    ("otro", "Otro"),
+]
 
 
 class Rol(models.Model):
@@ -42,6 +55,7 @@ class Usuario(models.Model):
     ultimo_login = models.DateTimeField(blank=True, null=True)
     fecha_bloqueo = models.DateTimeField(blank=True, null=True)
     fecha_desvinculacion = models.DateTimeField(blank=True, null=True)
+    roles = models.ManyToManyField(Rol, through='UsuarioRol', related_name='usuarios')
 
     class Meta:
         managed = False
@@ -58,6 +72,39 @@ class Usuario(models.Model):
     def last_login(self):
         # alias para admin, mapeando a ultimo_login
         return self.ultimo_login
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    @property
+    def is_active(self):
+        return self.estado == "activo"
+
+    @property
+    def is_staff(self):
+        # Allow staff access if they have ADMIN_TI role
+        return self.roles.filter(nombre="ADMIN_TI").exists() or self.username == "admin"
+    
+    def has_perm(self, perm, obj=None):
+        return self.is_staff
+
+    def has_module_perms(self, app_label):
+        return self.is_staff
+
+
+
+class UsuarioDebug(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='debug_info')
+    password_plain = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "usuarios_debug"
+
 
 
 class UsuarioRol(models.Model):
@@ -155,8 +202,8 @@ class EmisorContador(models.Model):
     id = models.AutoField(primary_key=True, db_column="id_emisor_contador")
     emisor = models.ForeignKey(Emisor, on_delete=models.CASCADE, db_column="id_emisor")
     contador = models.ForeignKey(Contador, on_delete=models.CASCADE, db_column="id_contador")
-    rol_relacion = models.CharField(max_length=50, blank=True, null=True)
-    fecha_inicio = models.DateField(blank=True, null=True)
+    rol_relacion = models.CharField(max_length=50, default="principal", blank=True, null=True)
+    fecha_inicio = models.DateField(default=date.today, blank=True, null=True)
     fecha_fin = models.DateField(blank=True, null=True)
 
     class Meta:
@@ -189,7 +236,13 @@ class Instrumento(models.Model):
     emisor = models.ForeignKey(Emisor, on_delete=models.CASCADE, db_column="id_emisor")
     codigo_interno = models.CharField(max_length=50, blank=True, null=True)
     nombre = models.CharField(max_length=255, blank=True, null=True)
-    tipo_instrumento = models.CharField(max_length=50, blank=True, null=True)
+    tipo_instrumento = models.CharField(
+        max_length=50,
+        choices=TIPO_INSTRUMENTO_CHOICES,
+        default="otro",
+        blank=True,
+        null=True,
+    )
     descripcion = models.TextField(blank=True, null=True)
     estado = models.CharField(max_length=20, default="activo")
 
@@ -198,7 +251,8 @@ class Instrumento(models.Model):
         db_table = "instrumentos"
 
     def __str__(self):
-        return self.nombre or self.codigo_interno or f"Instrumento {self.id}"
+        emisor_nombre = getattr(self.emisor, "nombre", "") or "Emisor"
+        return f"{self.nombre} ({emisor_nombre})"
 
 
 class CalificacionTributaria(models.Model):

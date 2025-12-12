@@ -1,23 +1,49 @@
 from datetime import date, timedelta
+import hashlib
+import logging
 import os
 
 import requests
 from requests import exceptions as req_exceptions
 from django.contrib.auth import logout
+from django.contrib import messages
+from django.utils import timezone
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, TemplateView, UpdateView
+from django.views.generic import CreateView, ListView, TemplateView, UpdateView, DeleteView
+from rest_framework.views import APIView
 
-from .forms import CalificacionTributariaForm
+from .forms import (
+    CalificacionTributariaForm,
+    UsuarioForm,
+    EmisorForm,
+    EmisorContadorForm,
+    EmisorUsuarioForm,
+    RegistroUsuarioForm,
+    SupervisorEstadoForm,
+)
 from .models import (
     CalificacionTributaria,
     Emisor,
     EmisorContador,
     EmisorUsuario,
     Instrumento,
+    Usuario,
+    UsuarioRol,
+    Rol,
+    Accionista,
+    Inversionista,
+    Documento,
+    HistorialAccion,
 )
 from .permissions import RoleRequiredMixin, _role_names
+
+from django.db import transaction
+from django.contrib.auth import login as auth_login
+
+
+logger = logging.getLogger(__name__)
 
 
 # Configuración de indicadores disponibles por país
@@ -61,6 +87,24 @@ INDICADORES = {
 def landing_indicadores_view(request):
     """Renderiza la landing page de indicadores económicos."""
     return render(request, "templatesApp/landing_indicadores.html")
+
+
+def crear_calificacion(request):
+    """
+    Vista simple para crear calificaciones tributarias desde un formulario standalone.
+    Carga emisores, instrumentos y contadores de forma dinámica.
+    """
+    form = CalificacionTributariaForm(request.POST or None, usuario=request.user)
+    if request.method == "POST" and form.is_valid():
+        calif = form.save()
+        _registrar_historial(calif, request.user, "CREACION", "Creación de calificación tributaria")
+        messages.success(
+            request,
+            "La calificación tributaria fue creada correctamente y está en estado Pendiente. "
+            "Debe ser revisada por un supervisor o contador responsable.",
+        )
+        return redirect("contador_calificaciones")
+    return render(request, "templatesApp/calificaciones/crear.html", {"form": form})
 
 
 def _fetch_fx_timeseries(symbol: str) -> tuple[list[str], list[float]]:
@@ -138,6 +182,22 @@ def _fetch_mindicador_timeseries(endpoint: str) -> tuple[list[str], list[float]]
     return labels, values
 
 
+def _registrar_historial(calif: CalificacionTributaria, usuario, accion: str, detalle: str = ""):
+    """
+    Registra una entrada de historial para trazabilidad.
+    No revienta el flujo si falla.
+    """
+    try:
+        HistorialAccion.objects.create(
+            calificacion=calif,
+            usuario=usuario if getattr(usuario, "is_authenticated", False) else None,
+            accion=accion[:15],
+            detalle=detalle,
+        )
+    except Exception as exc:
+        logger.warning("No se pudo registrar historial: %s", exc)
+
+
 def indicador_timeseries_api(request, pais: str, codigo: str):
     """
     Devuelve serie temporal para un indicador solicitado.
@@ -190,12 +250,61 @@ class LoginView(TemplateView):
     template_name = "templatesApp/auth/login.html"
 
     # TODO: implementar autenticación real (usar Django auth o integración existente)
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        demo_password = os.getenv("DEMO_DEFAULT_PASSWORD", "1234")
+        demo_hash = hashlib.sha256(demo_password.encode("utf-8")).hexdigest()
+
+        usuarios = list(Usuario.objects.all().order_by("username"))
+        for user in usuarios:
+            if getattr(user, "password_hash", None) == demo_hash:
+                user.demo_password = demo_password
+
+        ctx["usuarios_demo"] = usuarios
+        ctx["demo_default_password"] = demo_password
+        return ctx
+
     def post(self, request, *args, **kwargs):
-        # Placeholder: integra aquí la autenticación real con tu backend.
-        # Si el usuario ya está autenticado, redirige según rol.
-        if request.user and request.user.is_authenticated:
-            return redirect(_redirect_by_role(request.user))
-        return self.get(request, *args, **kwargs)
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+
+        ctx = self.get_context_data(**kwargs)
+
+        if not username or not password:
+            ctx["error"] = "Debe ingresar usuario y contraseña."
+            return self.render_to_response(ctx)
+
+        try:
+            user = Usuario.objects.get(username=username)
+        except Usuario.DoesNotExist:
+            ctx["error"] = "Usuario o contraseña inválidos."
+            logger.warning("ADMIN_ALERT login failed: usuario '%s' no existe", username)
+            return self.render_to_response(ctx)
+
+        candidate_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+        if user.password_hash != candidate_hash:
+            ctx["error"] = "Usuario o contraseña inválidos."
+            logger.warning("ADMIN_ALERT login failed: contraseña inválida para usuario '%s'", username)
+            return self.render_to_response(ctx)
+
+        estado = (user.estado or "").lower()
+        if estado in {"bloqueado", "inactivo"}:
+            ctx["error"] = f"El usuario está {estado}; inicio de sesión bloqueado."
+            logger.warning(
+                "ADMIN_ALERT intento de inicio de sesión por usuario %s con estado %s",
+                username,
+                estado,
+            )
+            return self.render_to_response(ctx)
+
+        target = _redirect_by_role(user)
+        logger.info(
+            "ADMIN_ALERT usuario '%s' inició sesión, redirigiendo a %s, estado=%s",
+            username,
+            target,
+            estado or "activo",
+        )
+        return redirect(target)
 
 
 def _redirect_by_role(user):
@@ -217,10 +326,50 @@ def _redirect_by_role(user):
     return "landing_public"
 
 
-class RegistroExternoView(TemplateView):
+class RegistroExternoView(CreateView):
     template_name = "templatesApp/auth/registro.html"
+    form_class = RegistroUsuarioForm
+    success_url = reverse_lazy("landing_public")
 
-    # TODO: limitar roles a ACCIONISTA/INVERSIONISTA y crear usuario en BD externa
+    def form_valid(self, form):
+        with transaction.atomic():
+            # 1. Crear Usuario
+            user = form.save(commit=False)
+            password = form.cleaned_data.get("password")
+            user.password_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+            user.save()
+            
+            tipo_cuenta = form.cleaned_data.get("tipo_cuenta")
+            emisores = form.cleaned_data.get("emisores")
+
+            # 2. Asignar Rol
+            rol_nombre = tipo_cuenta.upper() # ACCIONISTA or INVERSIONISTA
+            rol_obj, _ = Rol.objects.get_or_create(nombre=rol_nombre)
+            UsuarioRol.objects.create(usuario=user, rol=rol_obj)
+
+            # 3. Crear Perfil específico
+            if tipo_cuenta == "accionista":
+                Accionista.objects.create(usuario=user)
+                # 4. Vincular Emisores
+                if emisores:
+                    for em in emisores:
+                        EmisorUsuario.objects.create(
+                            usuario=user,
+                            emisor=em,
+                            rol_emisor="ACCIONISTA"
+                        )
+            else:
+                Inversionista.objects.create(usuario=user, tipo_inversionista="Retail")
+
+            # Auto-login (simulado pues usamos password_hash custom)
+            # En un sistema real django auth: auth_login(self.request, user)
+            # Aquí redirigimos al login con mensaje
+            
+            return redirect("login")
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        return ctx
 
 
 class LogoutView(TemplateView):
@@ -233,12 +382,61 @@ class AdminTiDashboardView(RoleRequiredMixin, TemplateView):
     template_name = "templatesApp/admin/dashboard.html"
     required_roles = ["ADMIN_TI"]
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["total_usuarios"] = Usuario.objects.count()
+        ctx["total_emisores"] = Emisor.objects.count()
+        ctx["total_calificaciones"] = CalificacionTributaria.objects.count()
+        # La BD enum admite: pendiente, terminada, rechazada. Map en_revision/corregida -> pendiente, aprobada -> terminada
+        ctx["calif_pendientes"] = CalificacionTributaria.objects.filter(estado_proceso="pendiente").count()
+        ctx["calif_en_revision"] = ctx["calif_pendientes"]
+        ctx["calif_aprobadas"] = CalificacionTributaria.objects.filter(estado_proceso="terminada").count()
+        ctx["calif_rechazadas"] = CalificacionTributaria.objects.filter(estado_proceso="rechazada").count()
+        return ctx
 
-class AdminTiUsuariosListView(RoleRequiredMixin, TemplateView):
+
+class AdminTiUsuariosListView(RoleRequiredMixin, ListView):
     template_name = "templatesApp/admin/usuarios_list.html"
     required_roles = ["ADMIN_TI"]
+    model = Usuario
+    context_object_name = "usuarios"
 
-    # TODO: CRUD de usuarios internos (crear roles internos)
+    def get_queryset(self):
+        return Usuario.objects.all().order_by("-fecha_creacion")
+
+
+class AdminTiUserCreateView(RoleRequiredMixin, CreateView):
+    template_name = "templatesApp/admin/usuario_form.html"
+    required_roles = ["ADMIN_TI"]
+    form_class = UsuarioForm
+    success_url = reverse_lazy("admin_ti_usuarios")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        user = self.object
+        # Check if user has CONTADOR or ANALISTA role
+        if user.roles.filter(nombre__in=["CONTADOR", "ANALISTA"]).exists():
+            fullname = user.full_name or user.username
+            Contador.objects.get_or_create(
+                usuario=user, 
+                defaults={"nombre_completo": fullname, "email": user.email}
+            )
+        return response
+
+
+class AdminTiUserUpdateView(RoleRequiredMixin, UpdateView):
+    template_name = "templatesApp/admin/usuario_form.html"
+    required_roles = ["ADMIN_TI"]
+    form_class = UsuarioForm
+    model = Usuario
+    success_url = reverse_lazy("admin_ti_usuarios")
+
+
+class AdminTiUserDeleteView(RoleRequiredMixin, DeleteView):
+    template_name = "templatesApp/admin/usuario_confirm_delete.html"
+    required_roles = ["ADMIN_TI"]
+    model = Usuario
+    success_url = reverse_lazy("admin_ti_usuarios")
 
 
 class AdminTiEmisoresListView(RoleRequiredMixin, TemplateView):
@@ -249,6 +447,13 @@ class AdminTiEmisoresListView(RoleRequiredMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         ctx["emisores"] = Emisor.objects.all()
         return ctx
+
+
+class AdminTiEmisorCreateView(RoleRequiredMixin, CreateView):
+    template_name = "templatesApp/admin/emisor_form.html"
+    required_roles = ["ADMIN_TI"]
+    form_class = EmisorForm
+    success_url = reverse_lazy("admin_ti_emisores")
 
 
 class AdminTiEmisorContadoresView(RoleRequiredMixin, TemplateView):
@@ -263,6 +468,39 @@ class AdminTiEmisorContadoresView(RoleRequiredMixin, TemplateView):
         return ctx
 
 
+class AdminTiEmisorContadorCreateView(RoleRequiredMixin, CreateView):
+    template_name = "templatesApp/admin/emisor_contador_form.html"
+    required_roles = ["ADMIN_TI"]
+    form_class = EmisorContadorForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        self.emisor = Emisor.objects.get(pk=self.kwargs["id_emisor"])
+        kwargs["emisor"] = self.emisor
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.emisor = self.emisor
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["emisor"] = self.emisor
+        return ctx
+
+    def get_success_url(self):
+        return reverse_lazy("admin_ti_emisor_contadores", kwargs={"id_emisor": self.emisor.id})
+
+
+class AdminTiEmisorContadorDeleteView(RoleRequiredMixin, DeleteView):
+    template_name = "templatesApp/admin/confirm_delete_generic.html"
+    required_roles = ["ADMIN_TI"]
+    model = EmisorContador
+    
+    def get_success_url(self):
+        return reverse_lazy("admin_ti_emisor_contadores", kwargs={"id_emisor": self.object.emisor.id})
+
+
 class AdminTiEmisorRepresentantesView(RoleRequiredMixin, TemplateView):
     template_name = "templatesApp/admin/emisor_representantes.html"
     required_roles = ["ADMIN_TI"]
@@ -275,15 +513,57 @@ class AdminTiEmisorRepresentantesView(RoleRequiredMixin, TemplateView):
         return ctx
 
 
+class AdminTiEmisorUsuarioCreateView(RoleRequiredMixin, CreateView):
+    template_name = "templatesApp/admin/emisor_representante_form.html"
+    required_roles = ["ADMIN_TI"]
+    form_class = EmisorUsuarioForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        self.emisor = Emisor.objects.get(pk=self.kwargs["id_emisor"])
+        kwargs["emisor"] = self.emisor
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.emisor = self.emisor
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["emisor"] = self.emisor
+        return ctx
+
+    def get_success_url(self):
+        return reverse_lazy("admin_ti_emisor_representantes", kwargs={"id_emisor": self.emisor.id})
+
+
+class AdminTiEmisorUsuarioDeleteView(RoleRequiredMixin, DeleteView):
+    template_name = "templatesApp/admin/confirm_delete_generic.html"
+    required_roles = ["ADMIN_TI"]
+    model = EmisorUsuario
+    
+    def get_success_url(self):
+        return reverse_lazy("admin_ti_emisor_representantes", kwargs={"id_emisor": self.object.emisor.id})
+
+
 class ContadorDashboardView(RoleRequiredMixin, TemplateView):
     template_name = "templatesApp/contador/dashboard.html"
     required_roles = ["CONTADOR", "ANALISTA"]
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["calificaciones_pendientes"] = CalificacionTributaria.objects.filter(
-            estado_proceso="pendiente"
-        )[:10]
+        emisores_ids = []
+        if self.request.user.is_authenticated:
+            emisores_ids = EmisorContador.objects.filter(
+                contador__usuario=self.request.user
+            ).values_list("emisor_id", flat=True)
+        base_qs = CalificacionTributaria.objects.filter(emisor_id__in=emisores_ids) if emisores_ids else CalificacionTributaria.objects.all()
+        ctx["calificaciones_pendientes"] = base_qs.filter(estado_proceso="pendiente")[:10]
+        ctx["total_mis_emisores"] = len(emisores_ids)
+        ctx["mis_calif_pendientes"] = base_qs.filter(estado_proceso="pendiente").count()
+        ctx["mis_calif_en_revision"] = ctx["mis_calif_pendientes"]
+        ctx["mis_calif_aprobadas"] = base_qs.filter(estado_proceso="terminada").count()
+        ctx["mis_calif_rechazadas"] = base_qs.filter(estado_proceso="rechazada").count()
         return ctx
 
 
@@ -316,7 +596,8 @@ class ContadorCalificacionCreateView(RoleRequiredMixin, CreateView):
                 contador__usuario=self.request.user
             ).values_list("emisor_id", flat=True)
         kwargs["usuario"] = self.request.user
-        kwargs["emisores_permitidos"] = Emisor.objects.filter(id__in=emisores_ids)
+        # Si no hay emisores asignados (o usuario no autenticado), permite todos para evitar listas vacías
+        kwargs["emisores_permitidos"] = Emisor.objects.filter(id__in=emisores_ids) if emisores_ids else Emisor.objects.all()
         return kwargs
 
 
@@ -335,7 +616,7 @@ class ContadorCalificacionUpdateView(RoleRequiredMixin, UpdateView):
                 contador__usuario=self.request.user
             ).values_list("emisor_id", flat=True)
         kwargs["usuario"] = self.request.user
-        kwargs["emisores_permitidos"] = Emisor.objects.filter(id__in=emisores_ids)
+        kwargs["emisores_permitidos"] = Emisor.objects.filter(id__in=emisores_ids) if emisores_ids else Emisor.objects.all()
         return kwargs
 
     def get_queryset(self):
@@ -353,6 +634,15 @@ class SupervisorDashboardView(RoleRequiredMixin, TemplateView):
     template_name = "templatesApp/supervisor/dashboard.html"
     required_roles = ["SUPERVISOR"]
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["calif_pendientes"] = CalificacionTributaria.objects.filter(estado_proceso="pendiente").count()
+        ctx["calif_en_revision"] = ctx["calif_pendientes"]
+        ctx["calif_aprobadas"] = CalificacionTributaria.objects.filter(estado_proceso="terminada").count()
+        ctx["calif_rechazadas"] = CalificacionTributaria.objects.filter(estado_proceso="rechazada").count()
+        ctx["calif_total"] = CalificacionTributaria.objects.count()
+        return ctx
+
 
 class SupervisorCalificacionListView(RoleRequiredMixin, ListView):
     template_name = "templatesApp/supervisor/calificaciones_list.html"
@@ -362,6 +652,29 @@ class SupervisorCalificacionListView(RoleRequiredMixin, ListView):
 
     def get_queryset(self):
         return CalificacionTributaria.objects.all()
+
+
+class SupervisorCalificacionEstadoUpdateView(RoleRequiredMixin, UpdateView):
+    template_name = "templatesApp/supervisor/calificacion_estado_form.html"
+    required_roles = ["SUPERVISOR"]
+    model = CalificacionTributaria
+    form_class = SupervisorEstadoForm
+    success_url = reverse_lazy("supervisor_calificaciones")
+
+    def form_valid(self, form):
+        calif = form.save(commit=False)
+        calif.modificado_por = self.request.user if self.request.user.is_authenticated else None
+        calif.fecha_modificacion = timezone.now()
+        calif.save()
+        form.save_m2m()
+        _registrar_historial(
+            calif,
+            self.request.user,
+            "ESTADO_SUP",
+            f"Cambio de estado a {calif.estado_proceso}",
+        )
+        messages.success(self.request, "Estado actualizado correctamente.")
+        return redirect(self.get_success_url())
 
 
 class AccionistaDashboardView(RoleRequiredMixin, TemplateView):
@@ -374,6 +687,7 @@ class AccionistaDashboardView(RoleRequiredMixin, TemplateView):
             ctx["emisores"] = Emisor.objects.none()
             ctx["calificaciones"] = CalificacionTributaria.objects.none()
             return ctx
+        
         emisor_ids = EmisorUsuario.objects.filter(usuario=self.request.user).values_list("emisor_id", flat=True)
         ctx["emisores"] = Emisor.objects.filter(id__in=emisor_ids)
         ctx["calificaciones"] = CalificacionTributaria.objects.filter(emisor_id__in=emisor_ids)[:20]
@@ -385,15 +699,75 @@ class InversionistaDashboardView(RoleRequiredMixin, TemplateView):
     required_roles = ["INVERSIONISTA"]
 
     def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        if not self.request.user.is_authenticated:
-            ctx["emisores"] = Emisor.objects.none()
-            ctx["calificaciones"] = CalificacionTributaria.objects.none()
-            return ctx
-        emisor_ids = EmisorUsuario.objects.filter(usuario=self.request.user).values_list("emisor_id", flat=True)
-        ctx["emisores"] = Emisor.objects.filter(id__in=emisor_ids)
-        ctx["calificaciones"] = CalificacionTributaria.objects.filter(emisor_id__in=emisor_ids)[:20]
-        return ctx
+        context = super().get_context_data(**kwargs)
+        # Fetch actual reports from Documento model
+        context["reportes"] = Documento.objects.filter(
+            tipo_documento__icontains="reporte"
+        ).order_by("-fecha_creacion")[:5]
+        
+        # Show all active issuers since "Follow" logic is not fully implemented for Inversionista
+        # Or filter if using EmisorUsuario in future
+        context["emisores"] = Emisor.objects.filter(estado="activo").order_by("nombre")
+        return context
+
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from django.http import FileResponse
+import io
+
+class GenerarReporteCalificacionesView(RoleRequiredMixin, APIView):
+    required_roles = ["INVERSIONISTA", "ACCIONISTA"] # Allow both
+
+    def get(self, request, id_emisor):
+        emisor = Emisor.objects.get(pk=id_emisor)
+        calificaciones = CalificacionTributaria.objects.filter(emisor=emisor, estado_registro="vigente")
+
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        p.setTitle(f"Reporte Calificaciones - {emisor.nombre}")
+
+        # Header
+        p.setFont("Helvetica-Bold", 16)
+        p.drawString(50, 750, f"Reporte de Calificaciones Tributarias")
+        p.setFont("Helvetica", 12)
+        p.drawString(50, 730, f"Emisor: {emisor.nombre}")
+        p.drawString(50, 715, f"RUT: {emisor.rut}")
+        
+        y = 680
+        
+        if not calificaciones.exists():
+            p.setFont("Helvetica-Bold", 14)
+            p.drawString(50, y, "Sin Calificaciones")
+        else:
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(50, y, "Año")
+            p.drawString(100, y, "Instrumento")
+            p.drawString(300, y, "Monto")
+            p.drawString(400, y, "Factor")
+            p.drawString(500, y, "Rating")
+            y -= 20
+            p.line(50, y+15, 550, y+15)
+            
+            p.setFont("Helvetica", 10)
+            for cal in calificaciones:
+                instr_nombre = cal.instrumento.nombre if cal.instrumento else "N/A"
+                p.drawString(50, y, str(cal.anio))
+                p.drawString(100, y, instr_nombre[:35]) # Truncate if long
+                p.drawString(300, y, str(cal.monto))
+                p.drawString(400, y, str(cal.factor) if cal.factor else "-")
+                p.drawString(500, y, cal.rating or "-")
+                y -= 20
+                
+                if y < 50:
+                    p.showPage()
+                    y = 750
+
+        p.showPage()
+        p.save()
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename=f"reporte_{emisor.id}.pdf")
+
 
 
 class EmisorCalificacionesView(RoleRequiredMixin, TemplateView):
@@ -413,4 +787,3 @@ class EmisorArchivoUploadView(RoleRequiredMixin, TemplateView):
     required_roles = ["ACCIONISTA", "INVERSIONISTA"]
 
     # TODO: implementar formulario de carga y permisos vinculados a emisor_usuario
-
