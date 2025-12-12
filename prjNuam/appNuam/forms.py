@@ -181,6 +181,15 @@ class CalificacionTributariaForm(forms.ModelForm):
 
     def save(self, commit=True):
         calif = super().save(commit=False)
+        # Normalizar estados a los valores aceptados por el enum de BD (pendiente, terminada, rechazada)
+        estado_map = {
+            "aprobada": "terminada",
+            "en_revision": "pendiente",
+            "corregida": "pendiente",
+        }
+        if calif.estado_proceso in estado_map:
+            calif.estado_proceso = estado_map[calif.estado_proceso]
+
         # Estado inicial pendiente y creador/modificador
         if not calif.pk:
             calif.estado_proceso = "pendiente"

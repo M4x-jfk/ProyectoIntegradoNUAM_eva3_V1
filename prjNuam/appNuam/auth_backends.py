@@ -1,3 +1,4 @@
+from django.contrib.auth.backends import BaseBackend
 from .models import Usuario
 
 class SHA256Backend(BaseBackend):
