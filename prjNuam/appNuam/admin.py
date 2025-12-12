@@ -3,6 +3,13 @@ from django.contrib import admin
 from . import models
 
 
+@admin.register(models.Instrumento)
+class InstrumentoAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'codigo_interno', 'tipo_instrumento', 'emisor', 'estado')
+    list_filter = ('tipo_instrumento', 'emisor', 'estado')
+    search_fields = ('nombre', 'codigo_interno', 'emisor__nombre')
+
+
 @admin.register(models.Rol)
 class RolAdmin(admin.ModelAdmin):
     list_display = ('nombre',)
